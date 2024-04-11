@@ -1,2 +1,6 @@
-# 2ndoParcialCD
-Segundo Parcial de la materia de Cómputo Distribuido
+# Segundo Parcial de la materia de Cómputo Distribuido
+
+Made by:
+- Braulio Solorio
+- Eduardo Martínez
+- Diego Jiménez
