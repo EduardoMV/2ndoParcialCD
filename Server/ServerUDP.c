@@ -67,7 +67,7 @@ int main()
     //receive the datagram 
     while(1){
 	len = sizeof(cliaddr); 
-	int n = recvfrom(listenfd, buffer, MAXLINE, 0, (struct sockaddr*)&cliaddr,&len); //receive message from server 
+	int n = recvfrom(listenfd, buffer, MAXLINE, 0, (struct sockaddr*)&cliaddr,&len); //receive message from client 
 	if(n < 0) {
 	    perror("recvfrom failed");
 	    exit(EXIT_FAILURE);
@@ -76,7 +76,7 @@ int main()
 	    printf("\nHe recibido del cliente: ");
 	    printf("%s\n",buffer);
 	}       
-	// send the response 
+	// send the response from server
 	sendto(listenfd, message, strlen(message), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr)); 
     }
     close(listenfd);
