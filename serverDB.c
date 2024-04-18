@@ -19,17 +19,18 @@ int sd, sd_actual; //descriptores de sockets
 int addrlen; //longitud de msgecciones
 struct sockaddr_in sind, pin; //msgecciones sockets cliente o servidor
 			      //
-void readFile(){
+			      //
+char * readFile(){
     FILE *fptr;
     fptr = fopen("whiteboard.data", "r");
 
-    char data[1024];
+    char * data;
+    data = malloc(sizeof(char) * 1024);
 
     fgets(data, 1024, fptr);
     fclose(fptr);
 
-    printf("%s\n", data);
-
+    return data;
 }
 
 void writeFile(char text[]){
@@ -73,36 +74,57 @@ int main(){
 	exit(1); 
     }
 
-    if((sd_actual = accept(sd, (struct sockaddr *)&pin, &addrlen)) == -1){
-	perror("Error on accepting connection");
-	exit(1);
-    }
-    
-    int keepGoing = 1; 
-
-    while(keepGoing){
-	int n = recv(sd_actual, msg, sizeof(msg), 0);
-	if(n == -1){
-	    perror("Error on recieving");
+    pid_t child_pid;
+    while(1){
+	if((sd_actual = accept(sd, (struct sockaddr *)&pin, &addrlen)) == -1){
+	    perror("accept");
 	    exit(1);
 	}
-	msg[n] = '\0';
-	writeFile(msg);
-	readFile();
-	printf("message stored\n");
 
-	if(strcmp(msg, "close") == 0){
-	    keepGoing = 0; 
+	child_pid = fork();
+	if(child_pid == 0){
+	    break;
 	}
-	int sent = send(sd_actual, "saved", strlen("saved"), 0);
-	if(sent == -1){
-	    perror("Error on sent");
-	    exit(1);
+	else{
+	    close(sd_actual);
 	}
     }
+    if(child_pid==0){
+	char * data;
+	while(1){
+	    if(recv(sd_actual, msg, sizeof(msg), 0) == -1){
+		perror("recv");
+		exit(1);
+	    }
 
-    close(sd_actual);
-    close(sd);
+	    if(strcmp(msg, "close") == 0){
+		break;
+	    }
+	    
+	    if(strcmp(msg, "update") == 0){	
+		data = readFile();
+	    }
+	    else{
+		writeFile(msg);
+		data = "saved :)";
+	    }
+
+	    printf("req TCP: %s\n", msg);
+	    printf("res TCP: %s\n", data);
+
+	    if(send(sd_actual, data, strlen(data), 0) == -1){
+		perror("send");
+		exit(1);
+	    }
+	}
+
+	close(sd_actual);
+	close(sd);
+	printf("connexión cerrada\n");
+    }
+    else{
+	close(sd);
+    }
     printf("Conection closed \n");
 
     return 0;
