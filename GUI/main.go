@@ -74,13 +74,34 @@ func main() {
 		} else if password.Text == "" {
 			dialog.ShowInformation("ERROR!", "You must have a password!", w)
 		} else {
-			u := newUser(user.Text, password.Text)
-			addUserToDB(u.Data)
-			dialog.ShowInformation("Awesome!", "Happy drawing "+user.Text+"!", w)
-			w.SetContent(whiteBoard(teacher, class, college))
+			// Load user data from database
+			usersData, err := os.ReadFile("db.txt")
+			if err != nil {
+				panic(err)
+			}
+			found := false
+			// Iterate through user data to check for matching credentials
+			for _, userData := range bytes.Split(usersData, []byte{'\n'}) {
+				var u User
+				err := json.Unmarshal(userData, &u)
+				if err != nil {
+					continue
+				}
+				if u.Name == user.Text && u.Password == password.Text {
+					found = true
+					break
+				}
+			}
+			if found {
+				dialog.ShowInformation("Awesome!", "Happy drawing "+user.Text+"!", w)
+				w.SetContent(whiteBoard(teacher, class, college))
+			} else {
+				dialog.ShowInformation("ERROR!", "Invalid username or password!", w)
+			}
 		}
 	})
 	w.SetContent(signInLayout(user, password, login))
 
 	w.ShowAndRun()
 }
+
