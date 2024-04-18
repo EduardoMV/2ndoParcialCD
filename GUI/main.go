@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"image/color"
+	"os"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -53,6 +56,15 @@ func whiteBoard(teacher, class, college *widget.Label) *fyne.Container {
 		layout.NewSpacer(),
 		layout.NewSpacer(),
 		canvas.NewRectangle(color.White),
+	)
+}
+
+func aboutApp() *fyne.Container {
+	return container.NewBorder(
+		widget.NewLabel("About our app"),
+		widget.NewLabel("Todos los derechos reservados a los contribuidores de la APP"),
+		layout.NewSpacer(),
+		layout.NewSpacer(),
 	)
 }
 
