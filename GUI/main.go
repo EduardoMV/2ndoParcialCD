@@ -22,7 +22,7 @@ func newUser(name string, password string) *User {
 	user := &User{}
 	user.Name = name
 	user.Password = password
-	user.Data = []byte("{\n\tName: " + name + ", \tPassword: " + password + "\n}\n")
+	user.Data = []byte("{\n\tName: " + name + ", \n\tPassword: " + password + "\n}\n")
 	return user
 }
 
