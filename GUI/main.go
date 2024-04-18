@@ -82,12 +82,18 @@ func main() {
 			found := false
 			// Iterate through user data to check for matching credentials
 			for _, userData := range bytes.Split(usersData, []byte{'\n'}) {
-				var u User
-				err := json.Unmarshal(userData, &u)
-				if err != nil {
+				if !bytes.Contains(userData, []byte("Name")) || !bytes.Contains(userData, []byte("Password")) {
 					continue
 				}
-				if u.Name == user.Text && u.Password == password.Text {
+				nameStart := bytes.Index(userData, []byte(":")) + 2
+				nameEnd := bytes.Index(userData, []byte(",")) - 1
+				passwordStart := bytes.Index(userData, []byte("Password")) + 10
+				passwordEnd := bytes.LastIndex(userData, []byte("}")) - 1
+
+				uName := string(userData[nameStart:nameEnd])
+				uPassword := string(userData[passwordStart:passwordEnd])
+
+				if uName == user.Text && uPassword == password.Text {
 					found = true
 					break
 				}
