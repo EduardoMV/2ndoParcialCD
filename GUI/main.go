@@ -56,6 +56,15 @@ func whiteBoard(teacher, class, college *widget.Label) *fyne.Container {
 	)
 }
 
+func aboutApp() *fyne.Container {
+	return container.NewBorder(
+		widget.NewLabel("About our app"),
+		widget.NewLabel("Todos los derechos reservados a los contribuidores de la APP"),
+		layout.NewSpacer(),
+		layout.NewSpacer(),
+	)
+}
+
 func main() {
 	a := app.New()
 	w := a.NewWindow("Whiteboard")
