@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"image/color"
+	"os"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -83,10 +86,38 @@ func main() {
 		} else if password.Text == "" {
 			dialog.ShowInformation("ERROR!", "You must have a password!", w)
 		} else {
-			u := newUser(user.Text, password.Text)
-			addUserToDB(u.Data)
-			dialog.ShowInformation("Awesome!", "Happy drawing "+user.Text+"!", w)
-			w.SetContent(whiteBoard(teacher, class, college))
+			// Load user data from database
+			usersData, err := os.ReadFile("db.txt")
+			if err != nil {
+				panic(err)
+			}
+			found := false
+			// Iterate through user data to check for matching credentials
+			userDataList := bytes.Split(usersData, []byte{'{'})
+			for _, userData := range userDataList {
+				if len(userData) == 0 {
+					continue
+				}
+				data := string(userData)
+				nameIndex := strings.Index(data, "Name:")
+				passwordIndex := strings.Index(data, "Password:")
+				if nameIndex != -1 && passwordIndex != -1 {
+					nameEndIndex := strings.Index(data[nameIndex:], ",")
+					passwordEndIndex := strings.Index(data[passwordIndex:], "\n")
+					uName := strings.TrimSpace(data[nameIndex+5 : nameIndex+nameEndIndex])
+					uPassword := strings.TrimSpace(data[passwordIndex+9 : passwordIndex+passwordEndIndex])
+					if uName == user.Text && uPassword == password.Text {
+						found = true
+						break
+					}
+				}
+			}
+			if found {
+				dialog.ShowInformation("Awesome!", "Happy drawing "+user.Text+"!", w)
+				w.SetContent(whiteBoard(teacher, class, college))
+			} else {
+				dialog.ShowInformation("ERROR!", "Invalid username or password!", w)
+			}
 		}
 	})
 	w.SetContent(signInLayout(user, password, login))
