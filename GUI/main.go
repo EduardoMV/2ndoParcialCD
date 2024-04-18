@@ -22,7 +22,7 @@ func newUser(name string, password string) *User {
 	user := &User{}
 	user.Name = name
 	user.Password = password
-	user.Data = []byte("{\n\tName: " + name + ", \tPassword: " + password + "\n}\n")
+	user.Data = []byte("{\n\tName: " + name + ", \n\tPassword: " + password + "\n}\n")
 	return user
 }
 
@@ -53,6 +53,15 @@ func whiteBoard(teacher, class, college *widget.Label) *fyne.Container {
 		layout.NewSpacer(),
 		layout.NewSpacer(),
 		canvas.NewRectangle(color.White),
+	)
+}
+
+func aboutApp() *fyne.Container {
+	return container.NewBorder(
+		widget.NewLabel("About our app"),
+		widget.NewLabel("Todos los derechos reservados a los contribuidores de la APP"),
+		layout.NewSpacer(),
+		layout.NewSpacer(),
 	)
 }
 

@@ -1,27 +1,8 @@
 {
-	Name: Diego, 	Password: 123
+	Name: Diego, 
+	Password: 123
 }
 {
-	Name: Pedro, 	Password: 456
-}
-{
-	Name: Braulio, 	Password: Feliz
-}
-{
-	Name: Prueba, 	Password: 1234
-}
-{
-	Name: Adonis, 	Password: 2345
-}
-{
-	Name: Dani, 	Password: 122
-}
-{
-	Name: DiegoJmz, 	Password: 12345
-}
-{
-	Name: Diego, 	Password: 123
-}
-{
-	Name: DiegoJmz, 	Password: 1234
+	Name: Brau, 
+	Password: 234
 }
