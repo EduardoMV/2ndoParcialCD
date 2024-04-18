@@ -81,21 +81,23 @@ func main() {
 			}
 			found := false
 			// Iterate through user data to check for matching credentials
-			for _, userData := range bytes.Split(usersData, []byte{'\n'}) {
-				if !bytes.Contains(userData, []byte("Name")) || !bytes.Contains(userData, []byte("Password")) {
+			userDataList := bytes.Split(usersData, []byte{'{'})
+			for _, userData := range userDataList {
+				if len(userData) == 0 {
 					continue
 				}
-				nameStart := bytes.Index(userData, []byte(":")) + 2
-				nameEnd := bytes.Index(userData, []byte(",")) - 1
-				passwordStart := bytes.Index(userData, []byte("Password")) + 10
-				passwordEnd := bytes.LastIndex(userData, []byte("}")) - 1
-
-				uName := string(userData[nameStart:nameEnd])
-				uPassword := string(userData[passwordStart:passwordEnd])
-
-				if uName == user.Text && uPassword == password.Text {
-					found = true
-					break
+				data := string(userData)
+				nameIndex := strings.Index(data, "Name:")
+				passwordIndex := strings.Index(data, "Password:")
+				if nameIndex != -1 && passwordIndex != -1 {
+					nameEndIndex := strings.Index(data[nameIndex:], ",")
+					passwordEndIndex := strings.Index(data[passwordIndex:], "\n")
+					uName := strings.TrimSpace(data[nameIndex+5 : nameIndex+nameEndIndex])
+					uPassword := strings.TrimSpace(data[passwordIndex+9 : passwordIndex+passwordEndIndex])
+					if uName == user.Text && uPassword == password.Text {
+						found = true
+						break
+					}
 				}
 			}
 			if found {
@@ -110,4 +112,3 @@ func main() {
 
 	w.ShowAndRun()
 }
-
