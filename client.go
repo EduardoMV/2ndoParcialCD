@@ -10,21 +10,6 @@ import (
     "github.com/zserge/lorca"
 )
 
-func listen_to_socket(canvasStreamPtr *string, connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
-    defer waitingGroup.Done()
-    fmt.Println("listening...")
-    for {
-	var buffer [5120]byte
-	_, _, err := connection.ReadFromUDP(buffer[0:])
-	if err != nil {
-	    fmt.Println(err)
-	    return
-	}
-	//fmt.Println("Server: ", string(buffer[0:]))
-	*canvasStreamPtr = string(buffer[0:])
-	
-    }
-}
 
 func update_server(canvasStreamPtr *string, connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
     defer waitingGroup.Done()
@@ -36,11 +21,11 @@ func update_server(canvasStreamPtr *string, connection *net.UDPConn, waitingGrou
 	    fmt.Println(err)
 	    return
 	}
-	time.Sleep(time.Second)
     }
+    time.Sleep(500 * time.Millisecond)
 }
 
-func listen_for_updates(connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
+func listen_for_updates(canvasData *string, connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
     defer waitingGroup.Done()
     for {
 	_, err := connection.Write([]byte("update"))
@@ -48,7 +33,18 @@ func listen_for_updates(connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
 	    fmt.Println(err)
 	    return
 	}
-	time.Sleep(100 * time.Millisecond)
+
+	var buffer [6000]byte
+	_, _, errr := connection.ReadFromUDP(buffer[0:])
+	if errr != nil {
+	    fmt.Println(errr)
+	    return
+	}
+
+	//fmt.Println("Server: ", string(buffer[0:]))
+	*canvasData = string(buffer[0:])
+	
+	time.Sleep(500 * time.Millisecond)
     }
 }
 
@@ -71,9 +67,9 @@ func openUI(canvasStreamPtr *string, newCanvas *string, waitingGroup *sync.WaitG
     
     defer ui.Close()
     for{
+	
 	fun := fmt.Sprintf(`updateCanvas("%s")`, *newCanvas)
 	res := ui.Eval(fun)
-
 	canvas := ui.Eval(`getCanvasData()`).String()
 	*canvasStreamPtr = canvas;
 
@@ -112,11 +108,9 @@ func main() {
     wg.Add(1)
     go update_server(canvasPtr, conn, &wg)
 
-    wg.Add(1)
-    go listen_to_socket(&newCanvasData, conn, &wg)
     
     wg.Add(1)
-    go listen_for_updates(conn, &wg)
+    go listen_for_updates(&newCanvasData, conn, &wg)
 
     wg.Wait()
 }

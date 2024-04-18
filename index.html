@@ -44,11 +44,14 @@
 	    }
 
 	    function updateCanvas(dataURL){
-		let img = new Image;
-		img.source = dataURL
-		ctx.strokeStyle = "#ff0";
+		dataURL = dataURL.trim()
+		let img = new Image();
+		img.onload = () => {
+		    ctx.drawImage(img, 0,0, canvas.width, canvas.height)
+		}
+		img.src= dataURL;
+		ctx.strokeStyle = "#f00";
 		//ctx.clearRect(0,0, canvas.width, canvas.height);
-		ctx.drawImage(img, 0,0, canvas.width, canvas.height)
 
 		return dataURL
 	    }
