@@ -12,6 +12,20 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+type User struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Data     []byte `json:"-"`
+}
+
+func newUser(name string, password string) *User {
+	user := &User{}
+	user.Name = name
+	user.Password = password
+	user.Data = []byte("{\n\tName: " + name + ", \tPassword: " + password + "\n}\n")
+	return user
+}
+
 func signInLayout(username, password *widget.Entry, button *widget.Button) *fyne.Container {
 	return container.NewGridWithRows(3,
 		widget.NewLabel("Welcome to the Whiteboard! Please Log In"),
@@ -46,8 +60,7 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Whiteboard")
 	w.Resize(fyne.NewSize(550, 425))
-	errorWindow := a.NewWindow("Error")
-	errorWindow.Resize(fyne.NewSize(200, 200))
+
 	user := &widget.Entry{PlaceHolder: "Username"}
 	password := &widget.Entry{PlaceHolder: "Password", Password: true}
 	teacher := widget.NewLabel("Maestro: Dr. Juan Carlos Pimentel")
@@ -61,7 +74,9 @@ func main() {
 		} else if password.Text == "" {
 			dialog.ShowInformation("ERROR!", "You must have a password!", w)
 		} else {
-			dialog.ShowInformation("Awsome!", "Happy drawing!", w)
+			u := newUser(user.Text, password.Text)
+			addUserToDB(u.Data)
+			dialog.ShowInformation("Awesome!", "Happy drawing "+user.Text+"!", w)
 			w.SetContent(whiteBoard(teacher, class, college))
 		}
 	})
