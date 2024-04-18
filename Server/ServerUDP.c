@@ -22,77 +22,90 @@
 #include <stdlib.h>
 #include <signal.h>
 
-#define PORT 8080
+#define UDP_PORT 8080
+#define TCP_PORT 8888
 #define MAXLINE 1000
 
-int listenfd;
+int udp_listenfd;
+int tcp_socketfd;
 
 void abort_connection(int sig){
     printf("... closing server %d\n", sig);
-    close(listenfd);
+    close(udp_listenfd);
+    close(tcp_socketfd);
     exit(1);
 }
 
-// Driver code
 int main()
 {
     char buffer[MAXLINE];
     char *message = "Received";
     int len;
-    struct sockaddr_in servaddr, cliaddr;
+    struct sockaddr_in udp_servaddr, cliaddr, tcp_servaddr;
     int empezar;
 
     if(signal(SIGINT, abort_connection) == SIG_ERR){
         perror("Could not set signal handler");
         return 1;
     }
-    printf("Listening on port number: %d\n", PORT);
+    printf("UDP Server listening on port number: %d\n", UDP_PORT);
+    printf("Connecting to TCP Server on port number: %d\n", TCP_PORT);
 
     // Create a UDP Socket
-    listenfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if(listenfd == -1) {
-        perror("socket creation failed");
+    udp_listenfd = socket(AF_INET, SOCK_DGRAM, 0);
+    if(udp_listenfd == -1) {
+        perror("UDP socket creation failed");
         exit(EXIT_FAILURE);
     }
 
-    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    servaddr.sin_port = htons(PORT);
-    servaddr.sin_family = AF_INET;
+    udp_servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    udp_servaddr.sin_port = htons(UDP_PORT);
+    udp_servaddr.sin_family = AF_INET;
 
-    // bind server address to socket descriptor
-    if(bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) {
-        perror("bind failed");
+    // bind UDP server address to socket descriptor
+    if(bind(udp_listenfd, (struct sockaddr*)&udp_servaddr, sizeof(udp_servaddr)) != 0) {
+        perror("UDP bind failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Create a TCP Socket
+    tcp_socketfd = socket(AF_INET, SOCK_STREAM, 0);
+    if(tcp_socketfd == -1) {
+        perror("TCP socket creation failed");
+        exit(EXIT_FAILURE);
+    }
+
+    tcp_servaddr.sin_family = AF_INET;
+    tcp_servaddr.sin_port = htons(TCP_PORT);
+    tcp_servaddr.sin_addr.s_addr = INADDR_ANY;
+
+    // Connect to TCP server
+    if (connect(tcp_socketfd, (struct sockaddr *)&tcp_servaddr, sizeof(tcp_servaddr)) < 0) {
+        perror("TCP server connection failed");
         exit(EXIT_FAILURE);
     }
 
     //receive the datagram
     while(1){
         len = sizeof(cliaddr);
-        int n = recvfrom(listenfd, buffer, MAXLINE, 0, (struct sockaddr*)&cliaddr,&len); //receive message from client
+        int n = recvfrom(udp_listenfd, buffer, MAXLINE, 0, (struct sockaddr*)&cliaddr,&len); //receive message from client
         if(n < 0) {
-            perror("recvfrom failed");
+            perror("UDP recvfrom failed");
             exit(EXIT_FAILURE);
         }else{
             buffer[n] = '\0';
             printf("\nReceived from client: ");
             printf("%s\n",buffer);
-        }
 
-        // Fork a new process to handle the client request
-        pid_t pid = fork();
-        if (pid < 0) {
-            perror("fork failed");
-            exit(EXIT_FAILURE);
-        } else if (pid == 0) { // Child process
-            // send the response from server
-            sendto(listenfd, message, strlen(message), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
-            exit(EXIT_SUCCESS); // Exit child process
-        } else { // Parent process
-            // Close the socket in the parent process, as it's not needed
-            close(listenfd);
+            // Send the received data to the TCP server for storage
+            send(tcp_socketfd, buffer, strlen(buffer), 0);
         }
+        // send the response from server
+        sendto(udp_listenfd, message, strlen(message), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
     }
-    close(listenfd);
+    close(udp_listenfd);
+    close(tcp_socketfd);
     printf("Connection closed\n");
     return 0;
-} 
+}
+
