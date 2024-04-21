@@ -76,7 +76,7 @@ window.connection.onSignupStatus((value) => {
     else if (value === "failed") {
         dialog.className = "dialog error"
         dialogTitle.innerHTML = "Error"
-        dialogInfo.innerHTML = "Couldn't create a new account";
+        dialogInfo.innerHTML = "Couldn't create a new account, account may exists already";
         closeDialog(3000);
     }
 })

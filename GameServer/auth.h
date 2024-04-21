@@ -17,17 +17,32 @@ int login (const char *user, const char *pass) {
         char *line_user = strtok(line, ","); 
         char *line_pass = strtok(NULL, ",");
 
+        if(line_pass[strlen(line_pass) - 1] == '\n') line_pass[strlen(line_pass) - 1] = '\0';
+
         if(strcmp(user, line_user) == 0 && strcmp(pass, line_pass) == 0){
+            fclose(fptr);
             return 1;
         } 
     }
+    fclose(fptr);
     return 0;
 }
 
 int sign_up (const char *user, const char *pass) {
-    if(login(user, pass) == 1){
-        return 1;
+    FILE *fptr;
+    fptr = fopen("usuarios.csv", "r");
+    
+    char line[1024];
+
+    while(fgets(line, 1024, fptr)){
+        char *line_user = strtok(line, ","); 
+
+        if(strcmp(user, line_user) == 0){
+            fclose(fptr);
+            return 0;
+        } 
     }
+    fclose(fptr);
 
     FILE *file = fopen("usuarios.csv", "a");
     if (file == NULL) {
