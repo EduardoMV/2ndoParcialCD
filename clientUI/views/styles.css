@@ -60,7 +60,7 @@ a {
     color: var(--accent);
 }
 
-main {
+body, main {
     background: var(--background);
     width: 100vw;
     height: 100vh;
