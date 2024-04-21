@@ -4,9 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlackJack | Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="game/game.css">
+    <link rel="stylesheet" href="game/cards/cards.css">
+    <link rel="stylesheet" href="game/cards/styleAligment.css">
 </head>
 <body>
-    <h1>Game board</h1>
+    <div class="playingCards fourColours rotateHand">
+        <h1>BlackJack || 21</h1>
+        <ul class="deck">
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+            <li><div class="card back">*</div></li>
+        </ul>
+        <div class="clear"></div>
+
+        <div class="dealer">
+            <h3>Dealer</h3>
+            <ul class="deck">
+                <li>
+                    <div class="card back"></div>
+                    <div class="card back"></div>
+                </li>
+            </ul>
+        </div>
+        <div class="player">
+            <h3>Player</h3>
+            <ul class="deck">
+                <li>
+                    <div class="card back"></div>
+                    <a class="card rank-10 clubs" href="#">
+                        <span class="rank">10</span>
+                        <span class="suit">&clubs;</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+<script src="game/game.js"></script>
 </body>
 </html>
