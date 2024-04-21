@@ -37,41 +37,63 @@ void sendMsg(char *msg){
 	}
 }
 
-int loginUser(char *data){
-	char dir[DIRSIZE];
+int loginUser(char *data) {
+    if (data == NULL) return 0;
 
-	if(data == NULL) return 0;
+    char *user = NULL;
+    char *pass = NULL;
 
-	char *userField = strtok(data, "&");
-	char *passField = strtok(NULL, "&");
+    char *token = strtok_r(data, "&", &data);
+    while (token != NULL) {
+        char *key = strtok(token, "=");
+        char *value = strtok(NULL, "=");
 
-	char *userLabel = strtok(userField, "=");
-	char *userValue = strtok(NULL, "=");
+        if (strcmp(key, "user") == 0) {
+            user = value;
+        } else if (strcmp(key, "pass") == 0) {
+            pass = value;
+        }
 
-	char *passLabel = strtok(passField, "=");
-	char *passValue = strtok(NULL, "=");
+        token = strtok_r(NULL, "&", &data);
+    }
 
-	//returs 1 if the user and password are correct in the csv
-	return login(userValue, passValue);
+    if (user != NULL && pass != NULL) {
+        if (login(user, pass)) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
-int signupUser(char *data){
-	char dir[DIRSIZE];
+int signupUser(char *data) {
+    if (data == NULL) return 0;
 
-	if(data == NULL) return 0;
+    char *user = NULL;
+    char *pass = NULL;
 
-	char *userField = strtok(data, "&");
-	char *passField = strtok(NULL, "&");
+    char *token = strtok_r(data, "&", &data);
+    while (token != NULL) {
+        char *key = strtok(token, "=");
+        char *value = strtok(NULL, "=");
 
-	char *userLabel = strtok(userField, "=");
-	char *userValue = strtok(NULL, "=");
+        if (strcmp(key, "user") == 0) {
+            user = value;
+        } else if (strcmp(key, "pass") == 0) {
+            pass = value;
+        }
 
-	char *passLabel = strtok(passField, "=");
-	char *passValue = strtok(NULL, "=");
+        token = strtok_r(NULL, "&", &data);
+    }
 
-	//returs 1 if the user and password are correct in the csv
-	return sign_up(userValue, passValue);
+    if (user != NULL && pass != NULL) {
+        if (sign_up(user, pass)) {
+            return 1;
+        }
+    }
 
+    return 0;
+}
 }
 
 int main()
