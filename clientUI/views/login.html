@@ -9,19 +9,21 @@
 <body>
     <main>
         <form id="loginForm">
-            <h1>Iniciar Sesión</h1>
+            <h1>BlackJack</h1>
             <div class="inputs">
                 <div class="inputGroup">
                     <label for="user">Usuario</label>
-                    <input type="text" placeholder="JohnDoe" id="user" , name="user" required>
+                    <input type="text" placeholder="JohnDoe" id="user" , name="user">
                 </div>
                 <div class="inputGroup">
                     <label for="pass">Contraseña</label>
-                    <input type="password" placeholder="password" id="pass" , name="pass" required>
+                    <input type="password" placeholder="password" id="pass" , name="pass">
                 </div>
             </div>
-            
-            <button type="submit">Iniciar Sesión</button>
+            <div class="actionButtons">
+                <button id="signupBtn" class="secondary">Crear Cuenta</button>
+                <button id="loginBtn">Iniciar Sesión</button>
+            </div>
         </form>
     </main>
 </body>
