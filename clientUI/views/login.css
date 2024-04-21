@@ -84,3 +84,24 @@ div.dialog.succces > p, div.dialog.error > p, div.dialog.info > p{
 div.dialog.hidden{
     bottom: -50%;
 }
+
+form .checkbox {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+form .checkbox label {
+    font-size: 1.05;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+form .checkbox input {
+    width: 1.5em;
+    height: 1.5rem;
+    accent-color: var(--accent);
+    color: white;
+}

@@ -1,9 +1,22 @@
 const form = document.getElementById("loginForm");
 const login = document.getElementById("loginBtn");
 const signup = document.getElementById("signupBtn");
+const remember = document.getElementById("remember");
 const dialog = document.querySelector("div.dialog");
+const passField = document.getElementById("pass");
+const userField = document.getElementById("user");
 const dialogTitle = document.querySelector("h3.dialog-title");
 const dialogInfo = document.querySelector("p.dialog-info");
+
+window.onload = () => {
+    const loginInfo = localStorage.getItem("login-info");
+    if (!loginInfo) return;
+
+    const { username, password } = JSON.parse(loginInfo);
+    passField.value = password;
+    userField.value = username;
+    remember.checked = true;
+}
 
 form.onsubmit = (evt) => evt.preventDefault();
 
@@ -54,6 +67,7 @@ login.addEventListener("click", () => {
     const user = formData.get("user");
     const pass = formData.get("pass");
 
+
     if (user.trim() === "" || pass.trim() === "") {
         showDialog("Login Form Incomplete", "There are missing fields to create an account", "error");
         return;
@@ -75,7 +89,15 @@ window.connection.onLoginStatus((value) => {
         showDialog("Login Failed", "User or password may be incorrect", "error");
     }
     else if (value !== "pending") {
-
+        console.log(value);
+        const user = JSON.parse(value);
+        if (remember.checked) {
+            const { username, password } = user;
+            localStorage.setItem("login-info", JSON.stringify({ username, password }))
+        }
+        else if (localStorage.getItem("login-info")) {
+            localStorage.removeItem("login-info");
+        }
         showDialog("Welcome", "Login success, enjoy your game!", "success");
 
         setTimeout(() => {
@@ -87,10 +109,8 @@ window.connection.onLoginStatus((value) => {
 window.connection.onSignupStatus((value) => {
     if (value === "success") {
         showDialog("Account Created!", "Welcome to our platform", "success");
-        setTimeout(() => {
-            window.location.replace("./game.html")
-        }, 3000);
-
+        userField.value = "";
+        passField.value = "";
     }
     else if (value === "failed") {
         showDialog("Eror while creating an account", "An account with the same username may already exists", "success");
