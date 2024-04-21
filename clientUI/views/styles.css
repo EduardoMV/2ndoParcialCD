@@ -1,0 +1,110 @@
+:root {
+    --text: #e4eff6;
+    --background: #091219;
+    --primary: #99c2dc;
+    --secondary: #84602d;
+    --accent: #8ac659;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, Roboto, sans-serif;
+    box-sizing: border-box;
+}
+
+button {
+    border: none;
+    outline: none;
+    background: var(--accent);
+    color: var(--background);
+    padding: 15px 25px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+button:hover {
+    transform: scale(1.05);
+    -webkit-box-shadow: 0px 0px 15px 0px var(--primary);
+    -moz-box-shadow: 0px 0px 15px 0px var(--primary);
+    box-shadow: 0px 0px 15px 0px var(--primary);
+}
+
+input {
+    padding: 10px 5px;
+    border-radius: 5px;
+    display: inline;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #09f;
+    outline: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+label {
+    color: var(--text);
+}
+
+a {
+    color: var(--accent);
+}
+
+main {
+    background: var(--background);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/** NOT DEFAULT **/
+form {
+    width: 100%;
+    padding: 50px;
+    max-width: 500px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+form h1 {
+    width: 100%;
+    text-align: center;
+}
+form .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inputGroup {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputGroup label {
+    font-size: 1.05;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.inputGroup input {
+    font-size: 1rem;
+}
+
+.inputGroup form button {
+    margin-top: 100px;
+}
