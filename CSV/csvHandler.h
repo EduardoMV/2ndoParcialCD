@@ -15,7 +15,7 @@
 // - cols: número de columnas en la matriz de datos
 // - 0 si la operación fue exitosa, -1 si ocurrió un error
 
-int save_csv(const char *filename, double **data, int rows, int cols) {
+int save_csv(const char *filename, char ****data, int rows, int cols) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
         perror("Error al abrir el archivo");
@@ -24,7 +24,7 @@ int save_csv(const char *filename, double **data, int rows, int cols) {
 
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            fprintf(file, "%lf", data[i][j]);
+            fprintf(file, "%s", (*data)[i][j]);
             if (j < cols - 1) {
                 fprintf(file, ",");
             }
@@ -36,7 +36,7 @@ int save_csv(const char *filename, double **data, int rows, int cols) {
     return 0;
 }
 
-int read_csv(const char *filename, double ***data, int *rows, int *cols) {
+int read_csv(const char *filename, char ****data, int *rows, int *cols) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         perror("Error al abrir el archivo");
@@ -50,7 +50,7 @@ int read_csv(const char *filename, double ***data, int *rows, int *cols) {
         token = strtok(line, ",");
         int c = 0;
         while (token != NULL) {
-            (*data)[r][c++] = atof(token);
+            strcpy((*data)[r][c++], token);
             token = strtok(NULL, ",");
         }
         (*rows)++;
@@ -61,5 +61,6 @@ int read_csv(const char *filename, double ***data, int *rows, int *cols) {
     fclose(file);
     return 0;
 }
+
 
 #endif /* CSV_HANDLER_H */
