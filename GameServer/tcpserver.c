@@ -26,7 +26,7 @@ void aborta_handler(int sig)
 	exit(1);
 }
 
-void sendMsg(char *msg){
+void sendMsg(const char *msg){
 	char dir[DIRSIZE];
 
 	strcpy(dir, msg);
@@ -37,11 +37,13 @@ void sendMsg(char *msg){
 	}
 }
 
-int loginUser(char *data) {
+const char* loginUser(char *data) {
     if (data == NULL) return 0;
 
     char *user = NULL;
     char *pass = NULL;
+
+	char *auth;
 
     char *token = strtok_r(data, "&", &data);
     while (token != NULL) {
@@ -59,15 +61,17 @@ int loginUser(char *data) {
 
     if (user != NULL && pass != NULL) {
         if (login(user, pass)) {
-            return 1;
+            get_user_data(auth, user);
+			return auth;
         }
     }
 
-    return 0;
+    return "null";
 }
 
 int signupUser(char *data) {
     if (data == NULL) return 0;
+	
 
     char *user = NULL;
     char *pass = NULL;
@@ -167,10 +171,10 @@ int main()
 		char *token = strtok(dir, ":");
 		
 		if(strcmp(token, "login") == 0){
-			int auth = loginUser(strtok(NULL, ""));
-			printf("auth: %d\n", auth);
+			const char* auth = loginUser(strtok(NULL, ""));
+			printf("auth: %s\n", auth);
 			if(auth){
-				sendMsg("success");
+				sendMsg(auth);
 			}else{
 				sendMsg("failed");
 			}

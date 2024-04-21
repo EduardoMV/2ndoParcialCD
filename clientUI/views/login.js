@@ -16,11 +16,35 @@ function cancelDialog() {
     dialog.className = "dialog hidden";
 }
 
+function showDialog(title, text, style) {
+    dialog.className = `dialog ${style}`;
+    dialogTitle.innerHTML = `${title}`
+    dialogInfo.innerHTML = `${text}`;
+    closeDialog(3000);
+}
+
 signup.addEventListener("click", () => {
     cancelDialog();
     formData = new FormData(form);
-    const user = formData.get("user");
-    const pass = formData.get("pass");
+    const user = formData.get("user").toString();
+    const pass = formData.get("pass").toString();
+
+    if (user.trim() === "" || pass.trim() === "") {
+        showDialog("Couldn't create an account", "There are missing fields to create an account", "error");
+        return;
+    }
+
+    const fieldFormat = new RegExp("^[a-zA-Z0-9_]*$");
+    if (!(fieldFormat.test(user) && fieldFormat.test(pass))) {
+        showDialog("Couldn't create an account", "The fields should only by alphanumeric character or underscores", "error");
+        return;
+    }
+
+    if (user.length < 8 || pass.length < 8) {
+        showDialog("Couldn't create an account", "the fields should be at least 8 characters long", "error");
+        return;
+    }
+
     window.connection.signup(user, pass);
 })
 
@@ -29,6 +53,13 @@ login.addEventListener("click", () => {
     formData = new FormData(form);
     const user = formData.get("user");
     const pass = formData.get("pass");
+
+    if (user.trim() === "" || pass.trim() === "") {
+        showDialog("Login Form Incomplete", "There are missing fields to create an account", "error");
+        return;
+    }
+
+
     window.connection.login(user, pass);
 })
 
@@ -40,43 +71,28 @@ function closeDialog(time) {
 
 
 window.connection.onLoginStatus((value) => {
-    console.log(`login ${value}`);
-    if (value === "success") {
+    if (value === "null") {
+        showDialog("Login Failed", "User or password may be incorrect", "error");
+    }
+    else if (value !== "pending") {
 
-        dialog.className = "dialog success";
-        dialogTitle.innerHTML = "Success :)";
-        dialogInfo.innerHTML = "Account authentificated";
+        showDialog("Welcome", "Login success, enjoy your game!", "success");
 
         setTimeout(() => {
             window.location.replace("./game.html")
         }, 3000);
-        closeDialog(3000);
-    }
-    else if (value === "failed") {
-        dialog.className = "dialog error"
-        dialogTitle.innerHTML = "Error"
-        dialogInfo.innerHTML = "The user or the password may be incorrect";
-        closeDialog(3000);
     }
 })
 
 window.connection.onSignupStatus((value) => {
-    console.log(`signup ${value}`);
     if (value === "success") {
-
-        dialog.className = "dialog success";
-        dialogTitle.innerHTML = "Success :)";
-        dialogInfo.innerHTML = "Account created, Now you can LogIn";
-
+        showDialog("Account Created!", "Welcome to our platform", "success");
         setTimeout(() => {
             window.location.replace("./game.html")
         }, 3000);
-        closeDialog(3000);
+
     }
     else if (value === "failed") {
-        dialog.className = "dialog error"
-        dialogTitle.innerHTML = "Error"
-        dialogInfo.innerHTML = "Couldn't create a new account, account may exists already";
-        closeDialog(3000);
+        showDialog("Eror while creating an account", "An account with the same username may already exists", "success");
     }
 })
