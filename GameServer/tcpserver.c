@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 /* The following headers was required in older or some compilers*/
 // #include <sys/types.h>
@@ -39,50 +37,82 @@ void sendMsg(char *msg){
 	}
 }
 
-int loginUser(char *data){
-	char dir[DIRSIZE];
+int loginUser(char *data) {
+    if (data == NULL) return 0;
 
-	if(data == NULL) return 0;
+    char *user = NULL;
+    char *pass = NULL;
 
-	char *userField = strtok(data, "&");
-	char *passField = strtok(NULL, "&");
+    char *token = strtok_r(data, "&", &data);
+    while (token != NULL) {
+        char *key = strtok(token, "=");
+        char *value = strtok(NULL, "=");
 
-	char *userLabel = strtok(userField, "=");
-	char *userValue = strtok(NULL, "=");
+        if (strcmp(key, "user") == 0) {
+            user = value;
+        } else if (strcmp(key, "pass") == 0) {
+            pass = value;
+        }
 
-	char *passLabel = strtok(passField, "=");
-	char *passValue = strtok(NULL, "=");
+        token = strtok_r(NULL, "&", &data);
+    }
 
-	//returs 1 if the user and password are correct in the csv
-	return login(userValue, passValue);
+    if (user != NULL && pass != NULL) {
+        if (login(user, pass)) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
+
+int signupUser(char *data) {
+    if (data == NULL) return 0;
+
+    char *user = NULL;
+    char *pass = NULL;
+
+    char *token = strtok_r(data, "&", &data);
+    while (token != NULL) {
+        char *key = strtok(token, "=");
+        char *value = strtok(NULL, "=");
+
+        if (strcmp(key, "user") == 0) {
+            user = value;
+        } else if (strcmp(key, "pass") == 0) {
+            pass = value;
+        }
+
+        token = strtok_r(NULL, "&", &data);
+    }
+
+    if (user != NULL && pass != NULL) {
+        if (sign_up(user, pass)) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
 
 int main()
 {
 
-	char dir[DIRSIZE]; /* parametro entrada y salida */
+	char dir[DIRSIZE];
 
-	/*
-	When the user presses <Ctrl + C>, the aborta_handler function will be called,
-	and such a message will be printed.
-	Note that the signal function returns SIG_ERR if it is unable to set the
-	signal handler, executing line 54.
-	*/
 	if (signal(SIGINT, aborta_handler) == SIG_ERR)
 	{
 		perror("Could not set signal handler");
 		return 1;
 	}
-	// signal(SIGINT, aborta);      /* activando la senal SIGINT */
 
-	/* obtencion de un socket tipo internet */
 	if ((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 	{
 		perror("socket");
 		exit(1);
 	}
 
-	/* asignar direcciones en la estructura de direcciones */
 	sind.sin_family = AF_INET;
 	sind.sin_addr.s_addr = INADDR_ANY; /* INADDR_ANY=0x000000 = yo mismo */
 	sind.sin_port = htons(PUERTO);	   /*  convirtiendo a formato red */
@@ -138,6 +168,16 @@ int main()
 		
 		if(strcmp(token, "login") == 0){
 			int auth = loginUser(strtok(NULL, ""));
+			printf("auth: %d\n", auth);
+			if(auth){
+				sendMsg("success");
+			}else{
+				sendMsg("failed");
+			}
+		}
+		
+		if(strcmp(token, "signup") == 0){
+			int auth = signupUser(strtok(NULL, ""));
 			if(auth){
 				sendMsg("success");
 			}else{
