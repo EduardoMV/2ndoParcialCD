@@ -144,10 +144,6 @@ int main()
 				sendMsg("failed");
 			}
 		}
-		
-
-
-		
 
 		/* cerrar los dos sockets */
 		close(sd_actual);
