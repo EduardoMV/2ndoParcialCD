@@ -94,7 +94,7 @@ int signupUser(char *data) {
 
     return 0;
 }
-}
+
 
 int main()
 {
@@ -168,6 +168,7 @@ int main()
 		
 		if(strcmp(token, "login") == 0){
 			int auth = loginUser(strtok(NULL, ""));
+			printf("auth: %d\n", auth);
 			if(auth){
 				sendMsg("success");
 			}else{
