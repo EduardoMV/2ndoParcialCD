@@ -8,7 +8,7 @@
 #include "csvHandler.h"
 
 int login (const char *user, const char *pass) {
-    double **data;
+    char **data;
     int rows = 0, cols = 0;
 
     if (read_csv("usuarios.csv", &data, &rows, &cols) == -1) {
@@ -25,7 +25,7 @@ int login (const char *user, const char *pass) {
     return 0; // Usuario no encontrado o contraseña incorrecta
 }
 
-int sign_up (const char *user, const char *pass) {
+int sing_up (const char *user, const char *pass) {
     FILE *file = fopen("usuarios.csv", "a");
     if (file == NULL) {
         perror("Error al abrir el archivo");

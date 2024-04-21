@@ -15,7 +15,7 @@
 // - cols: número de columnas en la matriz de datos
 // - 0 si la operación fue exitosa, -1 si ocurrió un error
 
-int save_csv (const char *filename, char ****data, int rows, int cols) {
+int save_csv (const char *filename, char ***data, int rows, int cols) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
         perror("Error al abrir el archivo");
@@ -36,7 +36,7 @@ int save_csv (const char *filename, char ****data, int rows, int cols) {
     return 0;
 }
 
-int read_csv (const char *filename, char ****data, int *rows, int *cols) {
+int read_csv (const char *filename, char ***data, int *rows, int *cols) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         perror("Error al abrir el archivo");
