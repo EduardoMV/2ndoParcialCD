@@ -1,0 +1,86 @@
+
+form {
+    width: 100%;
+    padding: 50px;
+    max-width: 500px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+form h1 {
+    width: 100%;
+    text-align: center;
+}
+form .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inputGroup {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputGroup label {
+    font-size: 1.05;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.inputGroup input {
+    font-size: 1rem;
+}
+
+form .actionButtons {
+    display: flex;
+    gap: 20px;
+    padding-top: 50px;
+}
+
+form .actionButtons button {
+    width: 100%;
+}
+
+div.dialog {
+    display: inline-block;
+    padding: 15px 15px;
+    background: rgba(0,0,0,0.5);
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translate(-50%);
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: showDialog 4s;
+    border: none;
+
+    transition: all 0.3s ease;
+}
+
+
+div.dialog.success > *{
+    color: var(--success);
+}
+
+
+
+div.dialog.error > *{
+    color: var(--error);
+}
+
+div.dialog.info > *{
+    color: var(--info);
+}
+
+div.dialog.succces > p, div.dialog.error > p, div.dialog.info > p{
+    color: white;
+}
+
+div.dialog.hidden{
+    bottom: -50%;
+}

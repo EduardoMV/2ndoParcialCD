@@ -4,6 +4,10 @@
     --primary: #99c2dc;
     --secondary: #84602d;
     --accent: #8ac659;
+
+    --success: #8ac659;
+    --info: #09f;
+    --error: rgb(255, 136, 0);
 }
 
 * {
@@ -69,6 +73,12 @@ a {
     color: var(--accent);
 }
 
+body{
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
 main {
     background: var(--background);
     width: 100vw;
@@ -76,50 +86,5 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-/** NOT DEFAULT **/
-form {
-    width: 100%;
-    padding: 50px;
-    max-width: 500px;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-form h1 {
-    width: 100%;
-    text-align: center;
-}
-form .inputs {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.inputGroup {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.inputGroup label {
-    font-size: 1.05;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.inputGroup input {
-    font-size: 1rem;
-}
-
-form .actionButtons {
-    display: flex;
-    gap: 20px;
-    padding-top: 50px;
-}
-
-form .actionButtons button {
-    width: 100%;
+    overflow: hidden;
 }

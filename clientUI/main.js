@@ -6,9 +6,11 @@ app.whenReady().then(() => {
     const win = createWindow();
 
     const updateLoginStatus = (status) => win.webContents.send('login-status', status);
+    const updateSignupStatus = (status) => win.webContents.send('signup-status', status);
+
 
     ipcMain.handle('loginTCP', (_evt, user, pass) => { auth.login(user, pass, updateLoginStatus) });
-    ipcMain.handle('signupTCP', (_evt, user, pass) => { auth.signup(user, pass, updateLoginStatus) })
+    ipcMain.handle('signupTCP', (_evt, user, pass) => { auth.signup(user, pass, updateSignupStatus) })
 
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
