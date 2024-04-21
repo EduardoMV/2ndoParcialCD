@@ -14,5 +14,7 @@ form.onsubmit = (evt) => {
 }
 
 window.connection.onLoginStatus((value) => {
-    console.log(value);
+    if (value == "success") {
+        window.location.replace("./game.html")
+    }
 })

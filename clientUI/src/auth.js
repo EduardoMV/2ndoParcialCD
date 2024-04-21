@@ -1,8 +1,4 @@
-const { Worker } = require('node:worker_threads')
 const { startTCPConnection } = require('./connection');
-
-const path = require('node:path');
-
 
 function login(user, pass, updateStatus) {
 

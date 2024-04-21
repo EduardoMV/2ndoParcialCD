@@ -2,15 +2,8 @@ const { app, ipcMain } = require('electron/main')
 const createWindow = require('./src/window');
 const auth = require('./src/auth')
 
-
-function sendLogin(user, pass) {
-    client.write(`user: ${user}`);
-    client.write(`pass: ${pass}`);
-
-}
-
 app.whenReady().then(() => {
-    const win = createWindow()
+    const win = createWindow();
 
     const updateLoginStatus = (status) => win.webContents.send('login-status', status);
 
