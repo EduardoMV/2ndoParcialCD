@@ -1,4 +1,2 @@
-test,testu
-sername,password
-username,password
-anotherUser,justapassword
+user,pass,tokens
+usuarioPrueba,secret123,100

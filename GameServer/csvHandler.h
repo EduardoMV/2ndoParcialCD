@@ -37,7 +37,7 @@ int save_csv (const char *filename, char ***data, int rows, int cols) {
     return 0;
 }
 */
-
+/*
 int load_csv (const char *filename, char ***data, int *rows, int *cols) {
     printf("read_csv function");
     FILE *file = fopen(filename, "r");
@@ -68,6 +68,6 @@ int load_csv (const char *filename, char ***data, int *rows, int *cols) {
     fclose(file);
     return 0;
 }
-
+*/
 
 #endif /* CSV_HANDLER_H */

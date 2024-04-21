@@ -20,7 +20,14 @@ function login(user, pass, updateStatus) {
     console.log("Starting Login")
 
     client.on('data', (data) => {
-        console.log(data.toString())
+        data = data.toString();
+
+        if (data !== "null") {
+            const [username, password, ...info] = data.split(',');
+            const user = { username, password, info };
+            data = JSON.stringify(user);
+        }
+
         updateStatus(data.toString());
 
     })
@@ -46,9 +53,9 @@ function signup(user, pass, updateStatus) {
     console.log("Starting Login")
 
     client.on('data', (data) => {
-        console.log(data.toString())
+        data = data.toString();
+        console.log(data);
         updateStatus(data.toString());
-
     })
 }
 

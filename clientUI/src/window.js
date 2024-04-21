@@ -13,6 +13,8 @@ function createWindow() {
 
     mainWindow.loadFile('./views/login.html')
 
+    mainWindow.setMenu(null);
+
     // Open the DevTools.
     //mainWindow.webContents.openDevTools()
 
