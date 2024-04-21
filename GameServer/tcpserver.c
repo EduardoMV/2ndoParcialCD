@@ -70,7 +70,7 @@ int signupUser(char *data){
 	char *passValue = strtok(NULL, "=");
 
 	//returs 1 if the user and password are correct in the csv
-	return signup(userValue, passValue);
+	return sign_up(userValue, passValue);
 
 }
 
