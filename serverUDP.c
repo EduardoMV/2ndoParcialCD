@@ -11,7 +11,7 @@
 
 #define UDP_PORT 8080
 #define TCP_PORT 5000
-#define MSG_SIZE 1024
+#define MSG_SIZE 10000
 
 int udp_listenfd, tcp_socketfd;
 

@@ -5,40 +5,27 @@ import (
     "net"
     "os"
     "sync"
+    "net/url"
     "time"
+    "github.com/zserge/lorca"
 )
 
-func listen_to_socket(connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
+
+func update_server(canvasStreamPtr *string, connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
     defer waitingGroup.Done()
-    fmt.Println("listening...")
     for {
-	var buffer [512]byte
-	_, _, err := connection.ReadFromUDP(buffer[0:])
+	var data = []byte(*canvasStreamPtr)
+
+	_, err := connection.Write(data[:])
 	if err != nil {
 	    fmt.Println(err)
 	    return
 	}
-	fmt.Println("Server: ", string(buffer[0:]))
     }
+    time.Sleep(500 * time.Millisecond)
 }
 
-func ping_server(connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
-    defer waitingGroup.Done()
-    var counter int = 1
-    for {
-	message := fmt.Sprintf("Some data from client: %s", os.Args[1])
-	fmt.Printf("sent: %s\n", message);
-	_, err := connection.Write([]byte(message))
-	if err != nil {
-	    fmt.Println(err)
-	    return
-	}
-	time.Sleep(time.Second)
-	counter += 1
-    }
-}
-
-func listen_for_updates(connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
+func listen_for_updates(canvasData *string, connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
     defer waitingGroup.Done()
     for {
 	_, err := connection.Write([]byte("update"))
@@ -46,12 +33,59 @@ func listen_for_updates(connection *net.UDPConn, waitingGroup *sync.WaitGroup) {
 	    fmt.Println(err)
 	    return
 	}
-	time.Sleep(100 * time.Millisecond)
+
+	var buffer [6000]byte
+	_, _, errr := connection.ReadFromUDP(buffer[0:])
+	if errr != nil {
+	    fmt.Println(errr)
+	    return
+	}
+
+	//fmt.Println("Server: ", string(buffer[0:]))
+	*canvasData = string(buffer[0:])
+	
+	time.Sleep(500 * time.Millisecond)
     }
+}
+
+func openUI(canvasStreamPtr *string, newCanvas *string, waitingGroup *sync.WaitGroup){
+    defer waitingGroup.Done()
+    
+    
+    data, err := os.ReadFile("./index.html") 
+    if err != nil {
+	panic(err)
+    }
+
+    html := string(data[:])
+    
+    ui, err := lorca.New("data:text/html," + url.PathEscape(html), "", 480, 320)
+    if err != nil {
+	fmt.Println(err);
+	return;
+    }
+    
+    defer ui.Close()
+    for{
+	
+	fun := fmt.Sprintf(`updateCanvas("%s")`, *newCanvas)
+	res := ui.Eval(fun)
+	canvas := ui.Eval(`getCanvasData()`).String()
+	*canvasStreamPtr = canvas;
+
+	fmt.Println(res);
+
+    }
+
+    <- ui.Done()
 }
 
 func main() {
     var wg sync.WaitGroup
+    var canvasStream string;
+    var newCanvasData string;
+    canvasPtr := &canvasStream;
+
     // Resolve the string address to a UDP address
     udpAddr, err := net.ResolveUDPAddr("udp", "127.0.0.1:8080")
 
@@ -69,13 +103,14 @@ func main() {
     }
 
     wg.Add(1)
-    go ping_server(conn, &wg)
+    go openUI(canvasPtr, &newCanvasData, &wg)
 
     wg.Add(1)
-    go listen_to_socket(conn, &wg)
+    go update_server(canvasPtr, conn, &wg)
+
     
     wg.Add(1)
-    go listen_for_updates(conn, &wg)
+    go listen_for_updates(&newCanvasData, conn, &wg)
 
     wg.Wait()
 }

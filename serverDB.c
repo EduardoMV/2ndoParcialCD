@@ -12,7 +12,7 @@
 #include <netdb.h>
 #include <time.h>
 
-#define MSG_SIZE 1024
+#define MSG_SIZE 10000
 #define PORT 5000
 
 int sd, sd_actual; //descriptores de sockets
@@ -25,9 +25,9 @@ char * readFile(){
     fptr = fopen("whiteboard.data", "r");
 
     char * data;
-    data = malloc(sizeof(char) * 1024);
+    data = malloc(sizeof(char) * MSG_SIZE);
 
-    fgets(data, 1024, fptr);
+    fgets(data, MSG_SIZE, fptr);
     fclose(fptr);
 
     return data;
@@ -101,13 +101,11 @@ int main(){
 		break;
 	    }
 	    
-	    if(strcmp(msg, "update") == 0){	
-		data = readFile();
-	    }
-	    else{
+	    if(strcmp(msg, "update") != 0){	
 		writeFile(msg);
-		data = "saved :)";
 	    }
+
+	    data = readFile();
 
 	    printf("req TCP: %s\n", msg);
 	    printf("res TCP: %s\n", data);
