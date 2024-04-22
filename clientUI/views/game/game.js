@@ -9,11 +9,10 @@ let playerCountText = document.getElementById('player-count')
 
 buildDeck()
 shuffleDeck()
-//startGame()
+startGame()
 
 hitBtn.addEventListener('click', () => {
-  addCardToHand("user");
-  hitMe()
+  addCardToHand("user")
 })
 stayBtn.addEventListener('click', () => {
   stay()
@@ -24,19 +23,9 @@ console.log(deck)
 function startGame() {
   hiddenCard = deck.pop()
   dealerCount += getCardValue(hiddenCard)
-  dealerAces += checkForAce(hiddenCard)
-
-  while (dealerCount < 17) {
-    let card = deck.pop()
-    let cardView = document.createElement("img")
-    cardView.src = "./card/" + card + ".png"
-    dealerCount += getCardValue(card)
-    dealerAces += isItAnAce(card)
-    document.getElementById('dealer-cards').append(cardView);
-
-    givePlayerCards()
-
-  }
+  dealerAces += countAces(hiddenCard)
+  giveDealerCards()
+  // givePlayerCards("user")
 }
 function buildDeck() {
   let cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
@@ -60,19 +49,17 @@ function shuffleDeck() {
 function getCardValue(card) {
   let data = card.split('-') // ["10", "H"]
   let value = data[0]
-  if (typeof (value) == 'number') {
-    return parseInt(value)
-  } else {
+  if (isNaN(value)) {
     if (value == 'A') {
       return 11
-    } else {
-      return 10
     }
+    return 10
   }
+  return parseInt(value)
 }
 
 function stay() {
-  dealerCount, acesCount = countAces(dealerCount, acesCount)
+  dealerCount, dealerAces = countAces(dealerCount, dealerAces)
 
   playerCount, playerAces = countAces(playerCount, playerAces)
   canHitMe = false
@@ -107,40 +94,56 @@ function countAces(totalCount, acesCount) {
   }
   return totalCount, acesCount
 }
+function giveDealerCards() {
+  while (dealerCount < 17) {
+    let card = deck.pop()
+    console.log(card)
+    let cardView = document.createElement("img")
+    cardView.src = "./cards/" + card + ".png"
+    dealerCount += getCardValue(card)
+    dealerAces += isItAnAce(card)
+    console.log("card View: ", cardView)
+    document.getElementById('dealer-cards').append(cardView)
+  }
+}
 
-function givePlayerCards() {
+function givePlayerCards(user) {
   for (let i = 0; i < 2; i++) {
     let card = deck.pop()
     let cardView = document.createElement("img")
-    cardView.src = "./card/" + card + ".png"
+    cardView.src = "./cards/" + card + ".png"
     playerCount += getCardValue(card)
     playerAces += isItAnAce(card)
-    document.getElementById('player-cards').append(cardView);
+    document.getElementById(`playerHand-${user}`).append(cardView);
   }
 }
 
-function hitMe() {
-  if (!canHitMe) return
-  let card = deck.pop()
-  let cardView = document.createElement("img")
-  cardView.src = "./card/" + card + ".png"
-  playerCount += getCardValue(card)
-  playerAces += isItAnAce(card)
-  document.getElementById('player-cards').append(cardView);
+// function hitMe(user) {
+//   if (!canHitMe) return
+//   let card = deck.pop()
+//   let cardView = document.createElement("img")
+//   cardView.src = "./cards/" + card + ".png"
+//   playerCount += getCardValue(card)
+//   playerAces += isItAnAce(card)
+//   document.getElementById(`playerHand-${user}`).append(cardView);
 
-  playerCount, playerAces = countAces(playerCount, playerAces)
+//   playerCount, playerAces = countAces(playerCount, playerAces)
 
-  if (playerCount > 21) {
-    canHitMe = false
-  }
-}
+//   if (playerCount > 21) {
+//     canHitMe = false
+//     console.log("You can no loger hit!")
+//   }
+// }
 
 function addCardToHand(user) {
+  if (!canHitMe) return
   const hand = document.getElementById(`playerHand-${user}`);
-  const card = document.createElement("img");
-  const idx = Math.floor(Math.random() * deck.length)
-  card.src = `./cards/${deck[idx]}.png`
-  hand.appendChild(card);
+  const card = deck.pop()
+  playerCount += getCardValue(card)
+  playerAces += isItAnAce(card)
+  const cardImg = document.createElement("img");
+  cardImg.src = `./cards/${card}.png`
+  hand.appendChild(cardImg);
   const classes = ["one", "two", "three", "four", "five"];
   hand.classList.remove("one");
   hand.classList.remove("two");
@@ -150,6 +153,13 @@ function addCardToHand(user) {
 
   hand.classList.add(classes[hand.childNodes.length - 2]);
   console.log(":");
+
+  playerCount, playerAces = countAces(playerCount, playerAces)
+
+  if (playerCount > 21) {
+    canHitMe = false
+    console.log("You can no loger hit!")
+  }
 }
 
 let counter = 0;
