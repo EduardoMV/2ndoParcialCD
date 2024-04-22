@@ -1,6 +1,6 @@
 const { startTCPConnection } = require('./connection');
 
-function login(user, pass, updateStatus) {
+function login(user, pass, updateStatus, updateUserInfo) {
 
     const client = startTCPConnection("127.0.0.1", 5000);
     client.write(`login:user=${user}&pass=${pass}`);
@@ -23,13 +23,13 @@ function login(user, pass, updateStatus) {
         data = data.toString();
 
         if (data !== "null") {
-            const [username, password, ...info] = data.split(',');
-            const user = { username, password, info };
+            const [username, password, credits, ...info] = data.split(',');
+            const userInfo = { username, password, credits, info };
+            user = { ...userInfo };
             data = JSON.stringify(user);
+            updateUserInfo(data)
+            updateStatus(data);
         }
-
-        updateStatus(data.toString());
-
     })
 }
 
@@ -58,6 +58,7 @@ function signup(user, pass, updateStatus) {
         updateStatus(data.toString());
     })
 }
+
 
 module.exports = {
     login,

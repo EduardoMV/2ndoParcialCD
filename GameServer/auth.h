@@ -68,7 +68,7 @@ int sign_up (const char *user, const char *pass) {
         return 0;
     }
 
-    fprintf(file, "%s,%s\n", user, pass);
+    fprintf(file, "%s,%s,%d\n", user, pass,100);
     fclose(file);
     return 1;
 }

@@ -1,0 +1,86 @@
+
+header {
+    height: 100px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 30px auto 0;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 22px 10px;
+}
+
+header .profile-info {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 5px;
+}
+
+header .profile-info img {
+    height: 100%;
+    width: auto;
+    border-radius: 100%;
+}
+
+header .game-info {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+header .game-info p {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    border: 2px solid var(--accent);
+    padding: 10px 20px;
+    color: var(--accent);
+    font-weight: bolder;
+    font-size: 1.1rem;
+}
+
+main {
+    width: 100%;
+    max-width: 1000px;
+    padding: 10px;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+section {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    align-items: flex-end;
+    border-radius: 10px;
+    border: 2px solid var(--primary);
+}
+
+section:hover {
+    transform: scale(1.03);
+}
+section article {
+    margin-bottom: 30px;
+}
+
+section article h1 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+section article .content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+section .links {
+    display: flex;
+    gap: 20px;
+}
