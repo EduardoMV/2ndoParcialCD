@@ -73,3 +73,26 @@ body{
     background-color: var(--background);
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: white;
+    border: none;
+    border-radius: 100px;
+    opacity: 0.1;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #efefef;
+}
+

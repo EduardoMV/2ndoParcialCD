@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlackJack | Game</title>
     <link rel="stylesheet" href="./game/game.css">
+    <link rel="stylesheet" href="./game/chat.css">
+    <link rel="stylesheet" href="./styles.css">
+
 </head>
 <body>
     <h1>BlackJack 21</h1>
@@ -22,6 +25,16 @@
         <button id="stay">Quedarte</button>
         <button id="hitMe">Pedir Carta</button>
     </div>
+
+    <div class="chat">
+        <div class="chat-list" id="chatList">
+        </div>>
+        <div class="chat-controls">
+            <input type="text" placeholder="type your message here" id="chatField">
+        </div>
+    </div>
 </body>
 <script src="./game/game.js"></script>
+<script src="./game/chat.js"></script>
+
 </html>
