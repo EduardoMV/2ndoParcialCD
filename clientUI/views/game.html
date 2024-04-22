@@ -4,49 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BlackJack | Game</title>
-    <link rel="stylesheet" href="./cards/cards.css">
-    <link rel="stylesheet" href="./cards/styleAligment.css">
+    <link rel="stylesheet" href="./styleAligment.css">
 </head>
 <body>
-    <div class="playingCards fourColours rotateHand">
-        <h1>BlackJack || 21</h1>
-        <ul class="deck">
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-            <li><div class="card back">*</div></li>
-        </ul>
-        <div class="clear"></div>
-
-        <div class="dealer">
-            <h3>Dealer</h3>
-            <ul class="deck">
-                <li>
-                    <div class="card back"></div>
-                    <div class="card back"></div>
-                </li>
-            </ul>
-        </div>
-        <div class="player">
-            <h3>Player</h3>
-            <ul class="deck">
-                <li>
-                    <div class="card back"></div>
-                    <a class="card rank-10 clubs" href="#">
-                        <span class="rank">10</span>
-                        <span class="suit">&clubs;</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
+    <h1>BlackJack 21</h1>
+    <p id="result"></p>
+    <h2>Dealer: <span id="dealer-count"></span></h2>
+    <div class="dealer-cards">
+        <img id="hidden-card" src="./cards/BACK.png">
+        <img src="./cards/10-H.png">
     </div>
-<script src="./game.js"></script>
+    <h2>Player: <span id="player-count"></span></h2>
+    <div class="player-cards">
+        <img src="./cards/7-H.png">
+        <img src="./cards/K-C.png">
+    </div>
+    <div>
+        <button id="stay">Quedarte</button>
+        <button id="hitMe">Pedir Carta</button>
+    </div>
 </body>
+<script src="./game.js"></script>
 </html>
