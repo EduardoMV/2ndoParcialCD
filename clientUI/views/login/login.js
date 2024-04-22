@@ -103,7 +103,7 @@ window.connection.onLoginStatus((value) => {
 
         setTimeout(() => {
             window.location.replace("./about.html")
-        }, 3000);
+        }, 1000);
     }
 })
 
