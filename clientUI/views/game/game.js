@@ -1,4 +1,3 @@
-// Here we delcare the 
 let playerCount = 0, dealerCount = 0, playerAces = 0, dealerAces = 0
 let hiddenCard, deck = []
 let canHitMe = true
@@ -10,6 +9,7 @@ let playerCountText = document.getElementById('player-count')
 
 buildDeck()
 shuffleDeck()
+game()
 
 hitBtn.addEventListener('click', () => {
   addCardToHand("user");
@@ -46,7 +46,6 @@ function buildDeck() {
       deck.push(cards[j] + '-' + values[i])
     }
   }
-  console.log(deck)
 }
 
 function shuffleDeck() {
