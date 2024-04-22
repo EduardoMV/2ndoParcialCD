@@ -6,3 +6,7 @@ contextBridge.exposeInMainWorld('connection', {
     login: (user, pass) => ipcRenderer.invoke('loginTCP', user, pass),
     signup: (user, pass) => ipcRenderer.invoke('signupTCP', user, pass),
 })
+
+contextBridge.exposeInMainWorld('userData', {
+    getUserData: () => ipcRenderer.invoke('getUserData'),
+})

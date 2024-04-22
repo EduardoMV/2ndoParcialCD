@@ -101,7 +101,7 @@ window.connection.onLoginStatus((value) => {
         showDialog("Welcome", "Login success, enjoy your game!", "success");
 
         setTimeout(() => {
-            window.location.replace("./game.html")
+            window.location.replace("./about.html")
         }, 3000);
     }
 })
