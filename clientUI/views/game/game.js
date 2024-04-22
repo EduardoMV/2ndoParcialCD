@@ -9,7 +9,7 @@ let playerCountText = document.getElementById('player-count')
 
 buildDeck()
 shuffleDeck()
-game()
+//startGame()
 
 hitBtn.addEventListener('click', () => {
   addCardToHand("user");
@@ -20,8 +20,8 @@ stayBtn.addEventListener('click', () => {
 })
 console.log("Si jale perros!")
 console.log(deck)
-/*
-function game() {
+
+function startGame() {
   hiddenCard = deck.pop()
   dealerCount += getCardValue(hiddenCard)
   dealerAces += checkForAce(hiddenCard)
@@ -37,7 +37,7 @@ function game() {
     givePlayerCards()
 
   }
-}*/
+}
 function buildDeck() {
   let cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
   let values = ['C', 'H', 'D', 'S']
