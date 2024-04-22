@@ -1,4 +1,3 @@
-// Here we delcare the 
 let playerCount = 0, dealerCount = 0, playerAces = 0, dealerAces = 0
 let hiddenCard, deck = []
 let canHitMe = true
@@ -10,6 +9,7 @@ let playerCountText = document.getElementById('player-count')
 
 buildDeck()
 shuffleDeck()
+game()
 
 hitBtn.addEventListener('click', () => {
   hitMe()
@@ -19,6 +19,8 @@ stayBtn.addEventListener('click', () => {
 })
 console.log("Si jale perros!")
 console.log(deck)
+console.log(hiddenCard)
+
 function game() {
   hiddenCard = deck.pop()
   dealerCount += getCardValue(hiddenCard)
@@ -36,6 +38,7 @@ function game() {
 
   }
 }
+
 function buildDeck() {
   let cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
   let values = ['C', 'H', 'D', 'S']
@@ -44,7 +47,6 @@ function buildDeck() {
       deck.push(cards[j] + '-' + values[i])
     }
   }
-  console.log(deck)
 }
 
 function shuffleDeck() {
