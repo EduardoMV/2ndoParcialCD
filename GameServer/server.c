@@ -1,6 +1,8 @@
 
 #include <stdio.h> 
 #include <string.h> 
+#include <stdlib.h>
+#include <time.h>
 #include <sys/types.h> 
 #include <sys/stat.h>
 #include <arpa/inet.h> 
@@ -9,12 +11,15 @@
 #include <signal.h> 
 #include <unistd.h> 
 #include <stdlib.h>
+#include "blackjack.h"
 
 #define PORT 8080 
 #define MAXLINE 1000 
 
 int listenfd;
 int fd;
+struct card deck[52];
+
 
 void aborta_handler(int sig)
 {
@@ -22,8 +27,7 @@ void aborta_handler(int sig)
     close(listenfd);
     close(fd);
 	exit(1);
-}
-  
+} 
 
 int main() 
 {   
@@ -32,6 +36,12 @@ int main()
 		perror("Could not set signal handler");
 		return 1;
 	}
+
+    init_deck(deck);
+    shuffle_deck(deck);
+    for(int i = 0; i < 52; i++){
+        printf("card: %c-%c\n", deck[i].numb, deck[i].symb);
+    }
 
     pid_t child_pid; 
     char buffer[MAXLINE]; 
@@ -107,5 +117,6 @@ int main()
         close(listenfd);
         printf("Conexion cerrada por el servidor\n");                    
     }
+    
     return 0;
 } 
