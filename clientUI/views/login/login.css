@@ -45,6 +45,7 @@ form .inputs {
 
 form .actionButtons {
     display: flex;
+    flex-direction: row-reverse;
     gap: 20px;
     padding-top: 50px;
 }

@@ -23,7 +23,7 @@ chatField.addEventListener("keypress", (evt) => {
             const [cmd, tag, ...msg] = value.split(" ");
             let to = cmd === "/to" && tag !== undefined ? tag : "everyone";
             console.log(cmd, tag, msg);
-            window.game.send(username, to, to === "everyone" ? value : msg.join(" "));
+            window.game.send("chat", username, to, to === "everyone" ? value : msg.join(" "));
             chatField.value = "";
         }
     }
@@ -54,6 +54,15 @@ function createBubble(user, msg) {
 
 }
 
+function createServerInfo(msg) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("server-msg");
+    const msgText = document.createTextNode(msg);
+    msgDiv.appendChild(msgText);
+
+    chatList.appendChild(msgDiv);
+}
+
 window.game.onMessage((val) => {
     const [cmd, value] = val.split(":");
     if (cmd !== "chat") return;
@@ -61,9 +70,13 @@ window.game.onMessage((val) => {
     const [userProp, toProp, msgProp] = value.split("&");
     const [_user, user] = userProp.split("=");
     const [_to, to] = toProp.split("=");
-    const [_msg, msg] = msgProp.split("=");
+    let [_msg, msg] = msgProp.split("=");
 
-    if (to === "everyone" || to === username || user === username)
-        createBubble(user, msg.replace(/['"]+/g, ''));
+    if (to === "everyone" || to === username || user === username) {
+        msg = msg.replace(/['"]+/g, '')
+        if (user === "server") createServerInfo(msg);
+        else createBubble(user, msg);
+
+    }
 
 })

@@ -30,6 +30,7 @@ function login(user, pass, updateStatus, updateUserInfo) {
             updateUserInfo(data)
             updateStatus(data);
         }
+        else updateStatus("null");
     })
 }
 

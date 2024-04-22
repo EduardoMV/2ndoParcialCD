@@ -37,6 +37,11 @@
     display: flex;
 }
 
+.server-msg{
+    width: 100%;
+    text-align: center;
+}
+
 .chat-msg:has(.other) {
     justify-content: flex-start;
 }

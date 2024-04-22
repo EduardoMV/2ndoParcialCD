@@ -85,6 +85,7 @@ function closeDialog(time) {
 
 
 window.connection.onLoginStatus((value) => {
+    console.log(value);
     if (value === "null") {
         showDialog("Login Failed", "User or password may be incorrect", "error");
     }

@@ -14,5 +14,5 @@ contextBridge.exposeInMainWorld('userData', {
 contextBridge.exposeInMainWorld('game', {
     connect: () => ipcRenderer.invoke('connectGame'),
     onMessage: (callback) => ipcRenderer.on('chat-stream', (_evt, value) => callback(value)),
-    send: (user, to, msg) => ipcRenderer.invoke('sendMsg', user, to, msg)
+    send: (cmd, user, to, msg) => ipcRenderer.invoke('sendMsg', cmd, user, to, msg)
 })

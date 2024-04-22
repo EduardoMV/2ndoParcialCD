@@ -18,8 +18,11 @@ app.whenReady().then(() => {
     ipcMain.handle('loginTCP', (_evt, user, pass) => { auth.login(user, pass, updateLoginStatus, updateUserInfo) });
     ipcMain.handle('signupTCP', (_evt, user, pass) => { auth.signup(user, pass, updateSignupStatus) });
 
-    ipcMain.handle('connectGame', () => { chat.connectToChat(updateGameStream) });
-    ipcMain.handle('sendMsg', (_evt, user, to, msg) => chat.sendMsg(user, to, msg));
+    ipcMain.handle('connectGame', () => {
+        const usr = JSON.parse(userInfo);
+        chat.connectToChat(updateGameStream, usr.username, usr.password);
+    });
+    ipcMain.handle('sendMsg', (_evt, cmd, user, to, msg) => chat.sendMsg(cmd, user, to, msg));
 
 
     ipcMain.on('user-info', (_evt, val) => {
