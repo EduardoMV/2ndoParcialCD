@@ -1,6 +1,6 @@
 // Here we delcare the 
 let playerCount = 0, dealerCount = 0, playerAces = 0, dealerAces = 0
-let hiddenCard, deck
+let hiddenCard, deck = []
 let canHitMe = true
 let stayBtn = document.getElementById('stay')
 let hitBtn = document.getElementById('hitMe')
@@ -8,11 +8,17 @@ let result = document.getElementById('result')
 let dealerCountText = document.getElementById('dealer-count')
 let playerCountText = document.getElementById('player-count')
 
-window.onload = () => {
-  buildDeck()
-  shuffleDeck()
-}
+buildDeck()
+shuffleDeck()
 
+hitBtn.addEventListener('click', () => {
+  hitMe()
+})
+stayBtn.addEventListener('click', () => {
+  stay()
+})
+console.log("Si jale perros!")
+console.log(deck)
 function game() {
   hiddenCard = deck.pop()
   dealerCount += getCardValue(hiddenCard)
@@ -28,8 +34,6 @@ function game() {
 
     givePlayerCards()
 
-    hitBtn.addEventListener('click', () => { console.log("Give me another card!") })
-    stayBtn.addEventListener('click', () => { console.log("I want to stay!") })
   }
 }
 function buildDeck() {
@@ -64,6 +68,27 @@ function getCardValue(card) {
       return 10
     }
   }
+}
+
+function stay() {
+  dealerCount, acesCount = countAces(dealerCount, acesCount)
+
+  playerCount, playerAces = countAces(playerCount, playerAces)
+  canHitMe = false
+  document.getElementById('hidden-card').src = "./cards/" + hiddenCard + ".png"
+  let message = ""
+  if (playerCount > 21 || (playerCount < dealerCount && dealerCount <= 21)) {
+    message = "You have lost!"
+  }
+  else if (dealerCount > 21 || (playerCount > dealerCount && playerCount <= 21)) {
+    message = "You have won!"
+  } else {
+    message = "It's a tie!"
+  }
+
+  playerCountText.innerText = playerCount
+  dealerCountText.innerText = dealerCount
+  result.innerText = message
 }
 
 function isItAnAce(card) {
@@ -109,23 +134,3 @@ function hitMe() {
   }
 }
 
-function stay() {
-  dealerCount, acesCount = countAces(dealerCount, acesCount)
-
-  playerCount, playerAces = countAces(playerCount, playerAces)
-  canHitMe = false
-  document.getElementById('hidden-card').src = "./cards/" + hiddenCard + ".png"
-  let message = ""
-  if (playerCount > 21 || (playerCount < dealerCount && dealerCount <= 21)) {
-    message = "You have lost!"
-  }
-  else if (dealerCount > 21 || (playerCount > dealerCount && playerCount <= 21)) {
-    message = "You have won!"
-  } else {
-    message = "It's a tie!"
-  }
-
-  playerCountText.innerText = playerCount
-  dealerCountText.innerText = dealerCount
-  result.innerText = message
-}
