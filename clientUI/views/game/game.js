@@ -12,6 +12,7 @@ buildDeck()
 shuffleDeck()
 
 hitBtn.addEventListener('click', () => {
+  addCardToHand("user");
   hitMe()
 })
 stayBtn.addEventListener('click', () => {
@@ -19,6 +20,7 @@ stayBtn.addEventListener('click', () => {
 })
 console.log("Si jale perros!")
 console.log(deck)
+/*
 function game() {
   hiddenCard = deck.pop()
   dealerCount += getCardValue(hiddenCard)
@@ -35,7 +37,7 @@ function game() {
     givePlayerCards()
 
   }
-}
+}*/
 function buildDeck() {
   let cards = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
   let values = ['C', 'H', 'D', 'S']
@@ -133,4 +135,33 @@ function hitMe() {
     canHitMe = false
   }
 }
+
+function addCardToHand(user) {
+  const hand = document.getElementById(`playerHand-${user}`);
+  const card = document.createElement("img");
+  const idx = Math.floor(Math.random() * deck.length)
+  card.src = `./cards/${deck[idx]}.png`
+  hand.appendChild(card);
+  const classes = ["one", "two", "three", "four", "five"];
+  hand.classList.remove("one");
+  hand.classList.remove("two");
+  hand.classList.remove("three");
+  hand.classList.remove("four");
+  hand.classList.remove("five");
+
+  hand.classList.add(classes[hand.childNodes.length - 2]);
+  console.log(":");
+}
+
+let counter = 0;
+
+const inte = setInterval(() => {
+  if (counter == 2) {
+    clearInterval(inte);
+    return;
+  }
+  counter++;
+  console.log("new card")
+  addCardToHand("user");
+}, 1000);
 
