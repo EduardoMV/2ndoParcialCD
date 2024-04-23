@@ -27,8 +27,9 @@ int userCount = 0;
 int listenfd;
 int fd;
 struct card deck[52];
-char action[100];
-char data[100];
+char action[MAXLINE];
+char data[MAXLINE];
+char username[MAXLINE];
 char userlist[MAXLINE] = "";
 
 
