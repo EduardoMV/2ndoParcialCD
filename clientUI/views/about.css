@@ -1,0 +1,15 @@
+body {
+    background-image: url('background/10081437.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+section{
+    background-color: black;
+}
+
+p {
+    font-size: large;
+    font-family: 'Josefin Sans', sans-serif;
+}
