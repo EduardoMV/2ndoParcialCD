@@ -164,20 +164,13 @@ int main()
                     sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
                 }
             } else if (strcmp(action, "start") == 0) {
-                // Verifica si todos los jugadores han enviado "start"
-                // Si es así, inicia el juego
-                // Envía la respuesta al primer jugador para comenzar el juego
+
             } else if (strcmp(action, "take") == 0) {
-                // Lógica para que el usuario tome una carta
-                // Asegúrate de que la carta no se repita y de que se envíe al usuario correcto
-                // Envía la respuesta al usuario con la carta tomada
+
             } else if (strcmp(action, "endTurn") == 0) {
-                // Lógica para pasar al siguiente turno
-                // Asegúrate de manejar correctamente el caso en el que ya sea el último turno
-                // Envía la respuesta al siguiente jugador
+
             } else if (strcmp(action, "dealer") == 0) {
-                // Lógica para devolver el valor del dealer (cartas)
-                // Envía la respuesta al cliente con las cartas del dealer
+                
             }
         } else {
 
