@@ -39,11 +39,21 @@ void shuffle_deck(struct card *deck){
 
 }
 
+static int currentIndex = 0;
+
 struct card takeCard(struct card * deck){
-    struct card res; 
-    //logic goes here
-    
+
+    if (currentIndex >= 52) {
+        struct card dummyCard = { '0', '0', 0 };
+        return dummyCard;
+    }
+
+    struct card res = deck[currentIndex];
+
+    deck[currentIndex].active = 1;
+
+    currentIndex++;
+
     return res;
 }
-
 #endif /* BLACKJACK_H */
