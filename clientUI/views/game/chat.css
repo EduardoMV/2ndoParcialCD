@@ -63,7 +63,9 @@
     position: relative;
     z-index: 20;
 
-    animation: appearBubble 1.5s ease;
+    animation-name: appearBubble;
+    animation-duration:  1.5s;
+    animation-timing-function:  cubic-bezier(.83,.13,.64,1.35);
 }
 
 .chat-bubble.other {
@@ -115,11 +117,11 @@
 
 @keyframes appearBubble {
     from {
-        transform: translate(0, 100%);
+        transform: translate(0, 100%) scale(0);
         opacity: 0;
     }
     to {
-        transform: translate(0, 0);
+        transform: translate(0, 0) scale(1);
         opacity: 1;
     }
 }
