@@ -14,11 +14,22 @@
 #include "blackjack.h"
 
 #define PORT 8080 
-#define MAXLINE 1000 
+#define MAXLINE 1000
+#define MAX_USERS 10
+
+struct User {
+    char username[100];
+};
+
+struct User users[MAX_USERS]; // Lista de usuarios
+int userCount = 0;
 
 int listenfd;
 int fd;
 struct card deck[52];
+char action[100];
+char data[100];
+char userlist[MAXLINE] = "";
 
 
 void aborta_handler(int sig)
@@ -111,33 +122,67 @@ int main()
             buffer[n] = '\0'; 
             printf("\nHe recibido del cliente: ");
             printf("%s\n",buffer);
-        } 
-
-        /**
-        if(cmd == "game"){
-            if(action == "join"){
-                if(n >= 10) {
-                    strcpy(buffer, "game:action=join&data=\"match full\"")
-                    sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
-                    close(listenfd);
-                    return;
-                }
-
-                for(int i = 0; i < n; i++){
-                    if(user in users){
-                        close(listenfd);
-                        return
-                    }
-                    else{
-                        strcpy(buffer, "game:action=join&data=<lista usuarios>");
-                        sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
-                    }
-                }
-
-
-            }
         }
-        */
+        sscanf(buffer, "game:user=%[^&]&action=%[^&]&data=%s", username, action, data);
+
+        if (strcmp(action, "game") == 0) {
+            if (strcmp(action, "join") == 0) {
+                if (userCount >= MAX_USERS) {
+                    strcpy(buffer, "game:action=join&data=\"match full\"");
+                    sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+                } else {
+
+                    int userExists = 0;
+                    for (int i = 0; i < userCount; i++) {
+                        if (strcmp(username, users[i].username) == 0) {
+                            userExists = 1;
+                            break;
+                        }
+                    }
+
+                    if (userExists) {
+                        strcpy(buffer, "game:action=join&data=\"user already joined\"");
+                    } else {
+                        if (userCount >= MAX_USERS) {
+                            strcpy(buffer, "game:action=join&data=\"match full\"");
+                        } else {
+
+                            strcpy(users[userCount].username, username);
+                            userCount++;
+                            strcpy(buffer, "game:action=join&data=");
+
+                            for (int i = 0; i < userCount; i++) {
+                                strcat(buffer, users[i].username);
+                                strcat(buffer, ",");
+                            }
+
+                            if (strlen(buffer) > 0) {
+                                buffer[strlen(buffer) - 1] = '\0';
+                            }
+                        }
+                    }
+                    sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+                }
+            } else if (strcmp(action, "start") == 0) {
+                // Verifica si todos los jugadores han enviado "start"
+                // Si es así, inicia el juego
+                // Envía la respuesta al primer jugador para comenzar el juego
+            } else if (strcmp(action, "take") == 0) {
+                // Lógica para que el usuario tome una carta
+                // Asegúrate de que la carta no se repita y de que se envíe al usuario correcto
+                // Envía la respuesta al usuario con la carta tomada
+            } else if (strcmp(action, "endTurn") == 0) {
+                // Lógica para pasar al siguiente turno
+                // Asegúrate de manejar correctamente el caso en el que ya sea el último turno
+                // Envía la respuesta al siguiente jugador
+            } else if (strcmp(action, "dealer") == 0) {
+                // Lógica para devolver el valor del dealer (cartas)
+                // Envía la respuesta al cliente con las cartas del dealer
+            }
+        } else {
+
+        }
+
         //cliente
         //game:user=BraulioSg&action=join; -> agregar jugador       -> game:to=everyone&data=<jugador1>,<jugador2>,<jugador3>....
         //game:user=<usuario>&action=take&; -> regresar una carta    -> game:to=<user>&data=9-C
