@@ -1,5 +1,4 @@
-
-#include <stdio.h> 
+#include <stdio.h>
 #include <string.h> 
 #include <stdlib.h>
 #include <time.h>
@@ -126,17 +125,16 @@ int main()
         
 
         if (strcmp(cmd, "game") == 0) {
-            char *username;
-            char *action; 
-            char *data;
-            sscanf(buffer, "user=%[^&]&action=%[^&]&data=%s", username, action, data);
+            char username[MAXLINE];
+            char action[MAXLINE];
+            char data[MAXLINE];
+            sscanf(line, "user=%[^&]&action=%[^&]&data=%s", username, action, data);
 
             if (strcmp(action, "join") == 0) {
                 if (userCount >= MAX_USERS) {
                     strcpy(buffer, "game:action=join&data=\"match full\"");
                     sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
                 } else {
-
                     int userExists = 0;
                     for (int i = 0; i < userCount; i++) {
                         if (strcmp(username, users[i]) == 0) {
@@ -187,46 +185,77 @@ int main()
                 }
 
             } else if (strcmp(action, "take") == 0) {
+                struct card takenCard = takeCard(deck);
+
+                strcpy(buffer, "game:action=take&data=");
+                strcat(buffer, takenCard.numb);
+                strcat(buffer, "-");
+                strcat(buffer, takenCard.symb);
+                strcat(buffer, "&to=");
+                strcat(buffer, username);
+
+                sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
 
             } else if (strcmp(action, "endTurn") == 0) {
+                int currentPlayerIndex = -1;
+                for (int i = 0; i < userCount; i++) {
+                    if (strcmp(username, users[i]) == 0) {
+                        currentPlayerIndex = i;
+                        break;
+                    }
+                }
+
+                if (currentPlayerIndex == userCount - 1) {
+                    strcpy(buffer, "game:action=endTurn&data=null");
+                } else {
+                    char nextPlayer[MAXLINE];
+                    strcpy(nextPlayer, users[currentPlayerIndex + 1]);
+
+                    strcpy(buffer, "game:action=endTurn&data=");
+                    strcat(buffer, nextPlayer);
+                }
+
+                sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
 
             } else if (strcmp(action, "dealer") == 0) {
 
+                int dealerValue;
+                /*
+                 * Aqui tienen que mandarle el número al dealer
+                 */
+                sscanf(data, "%d", &dealerValue);
+
+                struct card dealerCards[10];
+                int totalValue = dealerValue;
+
+                int cardCount = 0;
+                while (totalValue < 17) {
+                    struct card takenCard = takeCard(deck);
+                    dealerCards[cardCount] = takenCard;
+                    totalValue += atoi(takenCard.numb); // Asumiendo que existe una función getCardValue que devuelve el valor numérico de la carta
+                    cardCount++;
+                }
+
+
+                strcpy(buffer, "game:action=dealer&data=");
+                for (int i = 0; i < cardCount; i++) {
+                    char cardStr[MAXLINE];
+                    sprintf(cardStr, "%c-%c", dealerCards[i].numb, dealerCards[i].symb);
+                    strcat(buffer, cardStr);
+                    strcat(buffer, ",");
+                }
+                if (strlen(buffer) > 0) {
+                    buffer[strlen(buffer) - 1] = '\0'; // Eliminar la coma final
+                }
+
+                // Enviar la respuesta al cliente
+                sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
             }
         }else{
             strcpy(buffer, line);
         }
 
-        //cliente
-        //game:user=BraulioSg&action=join; -> agregar jugador       -> game:to=everyone&data=<jugador1>,<jugador2>,<jugador3>....
-        //game:user=<usuario>&action=take&; -> regresar una carta    -> game:to=<user>&data=9-C
 
-        //game:user=<usuario>&action=<action>&data=<data || null>
-        
-        /*
-        ACTIONS:
-        | usuario | -> | accion | -> | respuesta |
-           join     ->  agregarlo ->  la lista de jugadores conectados (incluyendolo) game:action=join&data=<jugador1>,<jugador2>,<jugador3>....; //NOTA: No puede haber jugadores repeditos;
-           
-           start    ->  verifica si todos los conectados mandaron start -> game:action=start&data=<primer jugador>,
-
-           take     ->  devolver una carta ->  game:action=take&data=9-C&to=<usuario>
-           
-           endTurn  ->  regresas el siguiente turno -> game:action=endTurn&data=<siguiente jugador>
-                        si ya fue el ultimo data=null;
-           dealer(el valor que tiene) -> regresar -> game:action=dealer&data=<carta1,carta2,carta3....>         
-
-
-
-        -> join: agregar usuario
-        -> start: empezar el juego (todos los jugadores tuvieron que mandar esto);
-        -> take: agarra una carte
-        -> startTurn: el jugador empezó el turno
-        -> endTurn: terminó el turno 
-        */
-
-
-        //chat:user=BraulioSG&msg="hello world"
         for (int cc = 0; cc < clientCount; cc++){
             sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&connectedClients[cc], sizeof(connectedClients[cc])); 
         }
