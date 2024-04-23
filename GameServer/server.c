@@ -39,10 +39,12 @@ int main()
 
     init_deck(deck);
     shuffle_deck(deck);
-    for(int i = 0; i < 52; i++){
-        printf("card: %c-%c\n", deck[i].numb, deck[i].symb);
+    
+    for(int i = 0; i < 100; i++){
+        struct card curr = takeCard(deck);
+        printf("%c-%c\n", curr.numb, curr.symb);
     }
-
+    
     pid_t child_pid; 
     char buffer[MAXLINE]; 
     char *message; 
@@ -71,6 +73,10 @@ int main()
     len = sizeof(cliaddr); 
 
     struct sockaddr_in connectedClients[100];
+    
+    char *users[10];
+    int userCount = 0; 
+
     int clientCount = 0;
 
     int n;
@@ -79,7 +85,6 @@ int main()
         
         int prevConnected = 0;
         for(int cc = 0; cc < clientCount; cc++){
-            
             if(connectedClients[cc].sin_addr.s_addr != cliaddr.sin_addr.s_addr) continue;
             if(connectedClients[cc].sin_port != cliaddr.sin_port) continue;
             prevConnected = 1;
@@ -106,7 +111,72 @@ int main()
             buffer[n] = '\0'; 
             printf("\nHe recibido del cliente: ");
             printf("%s\n",buffer);
-        }       
+        } 
+
+        /**
+        if(cmd == "game"){
+            if(action == "join"){
+                if(n >= 10) {
+                    strcpy(buffer, "game:action=join&data=\"match full\"")
+                    sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+                    close(listenfd);
+                    return;
+                }
+
+                for(int i = 0; i < n; i++){
+                    if(user in users){
+                        close(listenfd);
+                        return
+                    }
+                    else{
+                        strcpy(buffer, "game:action=join&data=<lista usuarios>");
+                    }
+                }
+            }
+            else if(action == "take"){
+                ...
+            }
+            else if(action == "endturn"){
+                ...
+            }
+            else if(action == "dealer"){
+                
+            }
+        }
+        for (int cc = 0; cc < clientCount; cc++){
+            sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&connectedClients[cc], sizeof(connectedClients[cc])); 
+        }
+        */
+        //cliente
+        //game:user=BraulioSg&action=join; -> agregar jugador       -> game:to=everyone&data=<jugador1>,<jugador2>,<jugador3>....
+        //game:user=<usuario>&action=take&; -> regresar una carta    -> game:to=<user>&data=9-C
+
+        //game:user=<usuario>&action=<action>&data=<data || null>
+        
+        /*
+        ACTIONS:
+        | usuario | -> | accion | -> | respuesta |
+           join     ->  agregarlo ->  la lista de jugadores conectados (incluyendolo) game:action=join&data=<jugador1>,<jugador2>,<jugador3>....; //NOTA: No puede haber jugadores repeditos;
+           
+           start    ->  verifica si todos los conectados mandaron start -> game:action=start&data=<primer jugador>,
+
+           take     ->  devolver una carta ->  game:action=take&data=9-C&to=<usuario>
+           
+           endTurn  ->  regresas el siguiente turno -> game:action=endTurn&data=<siguiente jugador>
+                        si ya fue el ultimo data=null;
+           dealer(el valor que tiene) -> regresar -> game:action=dealer&data=<carta1,carta2,carta3....>         
+
+
+
+        -> join: agregar usuario
+        -> start: empezar el juego (todos los jugadores tuvieron que mandar esto);
+        -> take: agarra una carte
+        -> startTurn: el jugador empezó el turno
+        -> endTurn: terminó el turno 
+        */
+
+
+        //chat:user=BraulioSG&msg="hello world"
         for (int cc = 0; cc < clientCount; cc++){
             sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&connectedClients[cc], sizeof(connectedClients[cc])); 
         }
