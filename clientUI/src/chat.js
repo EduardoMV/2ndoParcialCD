@@ -31,6 +31,14 @@ function sendMsg(cmd, user, to, msg) {
     })
 }
 
+function sendCmd(cmd, user, action) {
+    const data = Buffer.from(`${cmd}:user=${user}&action=${action}`);
+
+    client.send(data, server_port, server_addr, (err) => {
+        if (err) client.close();
+    })
+}
+
 module.exports = {
     connectToChat,
     sendMsg
