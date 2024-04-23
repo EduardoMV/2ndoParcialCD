@@ -17,12 +17,6 @@
 #define MAXLINE 1000
 #define MAX_USERS 10
 
-struct User {
-    char username[100];
-};
-
-struct User users[MAX_USERS]; // Lista de usuarios
-int userCount = 0;
 
 int listenfd;
 int fd;
@@ -87,6 +81,7 @@ int main()
     struct sockaddr_in connectedClients[100];
     
     char *users[10];
+    int started[10];
     int userCount = 0; 
 
     int clientCount = 0;
@@ -124,9 +119,18 @@ int main()
             printf("\nHe recibido del cliente: ");
             printf("%s\n",buffer);
         }
-        sscanf(buffer, "game:user=%[^&]&action=%[^&]&data=%s", username, action, data);
 
-        if (strcmp(action, "game") == 0) {
+        char line[MAXLINE];
+        strcpy(line, buffer);
+        char *cmd = strtok(buffer, ":"); 
+        
+
+        if (strcmp(cmd, "game") == 0) {
+            char *username;
+            char *action; 
+            char *data;
+            sscanf(buffer, "user=%[^&]&action=%[^&]&data=%s", username, action, data);
+
             if (strcmp(action, "join") == 0) {
                 if (userCount >= MAX_USERS) {
                     strcpy(buffer, "game:action=join&data=\"match full\"");
@@ -135,7 +139,7 @@ int main()
 
                     int userExists = 0;
                     for (int i = 0; i < userCount; i++) {
-                        if (strcmp(username, users[i].username) == 0) {
+                        if (strcmp(username, users[i]) == 0) {
                             userExists = 1;
                             break;
                         }
@@ -148,12 +152,12 @@ int main()
                             strcpy(buffer, "game:action=join&data=\"match full\"");
                         } else {
 
-                            strcpy(users[userCount].username, username);
+                            strcpy(users[userCount], username);
                             userCount++;
                             strcpy(buffer, "game:action=join&data=");
 
                             for (int i = 0; i < userCount; i++) {
-                                strcat(buffer, users[i].username);
+                                strcat(buffer, users[i]);
                                 strcat(buffer, ",");
                             }
 
@@ -167,10 +171,10 @@ int main()
             } else if (strcmp(action, "start") == 0) {
                 int allStarted = 1;
                 for (int i = 0; i < userCount; i++) {
-                    if (strcmp(users[i].username, username) == 0) {
-                        users[i].started = 1;
+                    if (strcmp(users[i], username) == 0) {
+                        started[i] = 1;
                     }
-                    if (!users[i].started) {
+                    if (!started[i]) {
                         allStarted = 0;
                         break;
                     }
@@ -178,7 +182,7 @@ int main()
 
                 if (allStarted) {
                     strcpy(buffer, "game:action=start&data=");
-                    strcat(buffer, users[0].username);
+                    strcat(buffer, users[0]);
                     sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
                 }
 
@@ -189,8 +193,8 @@ int main()
             } else if (strcmp(action, "dealer") == 0) {
 
             }
-        } else {
-
+        }else{
+            strcpy(buffer, line);
         }
 
         //cliente
