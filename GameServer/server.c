@@ -164,13 +164,29 @@ int main()
                     sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
                 }
             } else if (strcmp(action, "start") == 0) {
+                int allStarted = 1;
+                for (int i = 0; i < userCount; i++) {
+                    if (strcmp(users[i].username, username) == 0) {
+                        users[i].started = 1;
+                    }
+                    if (!users[i].started) {
+                        allStarted = 0;
+                        break;
+                    }
+                }
+
+                if (allStarted) {
+                    strcpy(buffer, "game:action=start&data=");
+                    strcat(buffer, users[0].username);
+                    sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
+                }
 
             } else if (strcmp(action, "take") == 0) {
 
             } else if (strcmp(action, "endTurn") == 0) {
 
             } else if (strcmp(action, "dealer") == 0) {
-                
+
             }
         } else {
 
