@@ -1,5 +1,7 @@
 const chatField = document.getElementById("chatField");
 const chatList = document.getElementById("chatList");
+const chatToggler = document.getElementById("toggle-chat");
+const chatDiv = document.getElementById("chat")
 
 let username;
 
@@ -29,6 +31,14 @@ chatField.addEventListener("keypress", (evt) => {
     }
 })
 
+chatToggler.addEventListener("click", () => {
+    chatDiv.classList.toggle("hidden");
+    if (!chatDiv.classList.contains("hidden")) {
+        chatToggler.classList.remove("unread");
+    }
+})
+
+
 function createBubble(user, msg) {
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("chat-msg");
@@ -51,6 +61,10 @@ function createBubble(user, msg) {
     msgDiv.appendChild(bubble);
 
     chatList.appendChild(msgDiv);
+
+    if (chatDiv.classList.contains("hidden")) {
+        chatToggler.classList.add("unread");
+    }
 
 }
 
