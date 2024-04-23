@@ -1,4 +1,4 @@
-let playerCount = 0, dealerCount = 0, playerAces = 0, dealerAces = 0
+let dealerCount = 0, playerAces = 0, dealerAces = 0
 let hiddenCard, deck = []
 let canHitMe = true
 let stayBtn = document.getElementById('stay')
@@ -11,6 +11,9 @@ let playerCountText = document.getElementById('player-count')
 const hiddenCardElement = document.querySelector('#hidden-card');
 const playerHandsContainerElement = document.querySelector('#player-hands');
 
+let playerCount = 0;
+let currentTurn = 1;
+
 let username;
 
 /* Loads the username */
@@ -19,23 +22,44 @@ let username;
     username = user.username;
     window.game.connect();
     window.game.cmd("BraulioSG", "join", "null");
+    /*
     addPlayer(username);
     addCardToPlayer(username, "10-C");
+    addCardToPlayer(username, "A-C");
+
+    addPlayer("DiegoJmz");
+    addCardToPlayer("DiegoJmz", "A-S");
+    addCardToPlayer("DiegoJmz", "A-C");
+
+    addPlayer("EduardoMV");
+    addCardToPlayer("EduardoMV", "A-S");
+    addCardToPlayer("EduardoMV", "A-C");
+
+    document.getElementById("dealer-cards").appendChild(createPlayerElement("dealer"));
+    addCardToPlayer("dealer", "A-H");
+    addCardToPlayer("dealer", "A-C", true);
+    */
 })();
 
+stayBtn.addEventListener('click', () => {
+    nextTurn();
+})
+
+function nextTurn() {
+    playerHandsContainerElement.style.transform = `translate(-${(100 / playerCount) * currentTurn}%)`;
+    currentTurn++;
+    if (currentTurn >= playerCount) {
+        currentTurn = 0;
+    }
+}
+
 /*
+hitBtn.addEventListener('click', () => {
+    addCardToHand("user")
+})
 buildDeck()
 shuffleDeck()
 startGame()
-
-
-
-hitBtn.addEventListener('click', () => {
-  addCardToHand("user")
-})
-stayBtn.addEventListener('click', () => {
-  stay()
-})
 console.log(deck)
 
 function startGame() {
@@ -242,7 +266,7 @@ function addPlayer(user) {
     if (document.getElementById(`player-${user}`)) return false;
 
     playerCount++;
-    playerHandsContainerElement.style.width = `${playerCount * 100}%`;
+    playerHandsContainerElement.style.width = `${playerCount * 100}vw`;
     playerHandsContainerElement.appendChild(createPlayerElement(user));
 
     return true;
@@ -270,9 +294,9 @@ function removePlayer(user) {
  * @param {string} card card code to be created
  * @returns 
  */
-function createCardElement(card) {
+function createCardElement(card, hidden = false) {
     const cardDiv = document.createElement("div");
-    cardDiv.className = "card";
+    cardDiv.className = `card ${hidden ? "hidden" : ""}`;
 
     const cardInner = document.createElement("div");
     cardInner.className = "card-inner";
@@ -298,11 +322,11 @@ function createCardElement(card) {
  * @param {string} user name of the user to add the card
  * @param {string} card card code to be added
  */
-function addCardToPlayer(user, card) {
+function addCardToPlayer(user, card, hidden = false) {
     const playerHandElement = document.querySelector(`div#player-${user} > div.player-hand`);
     if (!playerHandElement) return false;
 
-    playerHandElement.appendChild(createCardElement(card));
+    playerHandElement.appendChild(createCardElement(card, hidden));
 
     const classes = ["one", "two", "three", "four", "five"];
 
@@ -312,7 +336,8 @@ function addCardToPlayer(user, card) {
     playerHandElement.classList.remove("four");
     playerHandElement.classList.remove("five");
 
-    playerHandElement.classList.add(classes[playerHandElement.childNodes.length - 2]);
+    playerHandElement.classList.add(classes[playerHandElement.childNodes.length - 1]);
+
 
     return true;
 }
@@ -320,13 +345,13 @@ function addCardToPlayer(user, card) {
 
 window.game.onCommand((value) => {
     const [cmd, ...args] = value.split(":");
+    console.log(value);
 
     if (cmd !== "game") return;
 
     const [actionProps, dataProps] = args.split("&");
     const [_actionKey, action] = actionProps.split("=");
     const [_dataKey, data] = dataProps.split("=");
-
 
 
 })

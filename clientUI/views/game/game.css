@@ -10,16 +10,24 @@ body {
 
 .player-scroller {
     width: 100vw;
-    overflow-x: auto;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    position: relative;
 }
 
-.player-hands {
-    display: flex;
+.player-hands,
+.delaer-cards {
+    position: relative;
 }
 
 .player {
-    min-height: 200px;
-    background: red;
+    display: inline;
+    float: left;
+    min-height: 250px;
+    width: 100vw;
+    padding: 0;
+    border: 0;
+    margin: 0;
 }
 
 .player-title {

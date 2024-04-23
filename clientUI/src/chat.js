@@ -16,7 +16,7 @@ function connectToChat(callback, user, pass) {
 
     client.on('message', (data, info) => {
         data = data.toString();
-        console.log(data);
+        console.log(`socket: ${data}`);
         callback(data);
     })
 
@@ -34,7 +34,6 @@ function sendGameCmd(user, action, data = "null") {
 }
 
 function sendToServer(buffer) {
-    console.log(buffer);
     client.send(buffer, server_port, server_addr, (err) => {
         if (err) {
             console.log(err);
