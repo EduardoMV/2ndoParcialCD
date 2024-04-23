@@ -44,8 +44,11 @@ static int currentIndex = 0;
 struct card takeCard(struct card * deck){
 
     if (currentIndex >= 52) {
-        struct card dummyCard = { '0', '0', 0 };
-        return dummyCard;
+        init_deck(deck);
+
+        shuffle_deck(deck);
+
+        currentIndex = 0;
     }
 
     struct card res = deck[currentIndex];
