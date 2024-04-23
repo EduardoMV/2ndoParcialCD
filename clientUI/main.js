@@ -1,7 +1,8 @@
-const { app, ipcMain } = require('electron/main')
+const { app, ipcMain, Notification } = require('electron/main')
 const createWindow = require('./src/window');
 const auth = require('./src/auth')
 const chat = require('./src/chat')
+
 
 app.whenReady().then(() => {
     const win = createWindow();
@@ -17,6 +18,7 @@ app.whenReady().then(() => {
 
     ipcMain.handle('loginTCP', (_evt, user, pass) => { auth.login(user, pass, updateLoginStatus, updateUserInfo) });
     ipcMain.handle('signupTCP', (_evt, user, pass) => { auth.signup(user, pass, updateSignupStatus) });
+    ipcMain.handle('sendNotification', (_evt, title, body) => { new Notification({ title, body }).show() })
 
     ipcMain.handle('connectGame', () => {
         const usr = JSON.parse(userInfo);

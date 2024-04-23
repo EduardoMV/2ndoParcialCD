@@ -19,27 +19,44 @@ chatField.addEventListener("keypress", (evt) => {
         const fieldFormat = new RegExp("^[a-zA-Z0-9_ ()¿?¡!#$%/]*$");
         const value = chatField.value;
 
-        console.log(value);
-
         if (fieldFormat.test(value) && value.trim().length > 0) {
             const [cmd, tag, ...msg] = value.split(" ");
             let to = cmd === "/to" && tag !== undefined ? tag : "everyone";
-            console.log(cmd, tag, msg);
             window.game.send("chat", username, to, to === "everyone" ? value : msg.join(" "));
             chatField.value = "";
         }
     }
 })
 
+const removeUnreadMsg = undefined;
 chatToggler.addEventListener("click", () => {
     chatDiv.classList.toggle("hidden");
     if (!chatDiv.classList.contains("hidden")) {
         chatToggler.classList.remove("unread");
+        if (removeUnreadMsg === undefined) {
+            const serverMsg = document.getElementById("unreadServerMsg");
+            if (!serverMsg) return;
+            removeUnreadMsg = setTimeout(() => {
+                serverMsg.remove();
+            }, 1500);
+        }
     }
 })
 
 
 function createBubble(user, msg) {
+    if (chatDiv.classList.contains("hidden")) {
+        window.connection.sendNotification(`${user} sent you a message`, msg);
+        if (!chatDiv.classList.contains("unread")) {
+            chatToggler.classList.add("unread");
+
+            if (!document.getElementById("unreadServerMsg")) {
+                const unreadMsg = createServerInfo("new messages");
+                unreadMsg.id = "unreadServerMsg";
+            }
+        }
+    }
+
     const msgDiv = document.createElement("div");
     msgDiv.classList.add("chat-msg");
 
@@ -62,10 +79,9 @@ function createBubble(user, msg) {
 
     chatList.appendChild(msgDiv);
 
-    if (chatDiv.classList.contains("hidden")) {
-        chatToggler.classList.add("unread");
-    }
+    chatList.scrollTop = chatList.scrollHeight;
 
+    return msgDiv;
 }
 
 function createServerInfo(msg) {
@@ -75,6 +91,8 @@ function createServerInfo(msg) {
     msgDiv.appendChild(msgText);
 
     chatList.appendChild(msgDiv);
+
+    return msgDiv;
 }
 
 window.game.onMessage((val) => {

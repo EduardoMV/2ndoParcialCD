@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('connection', {
     onSignupStatus: (callback) => ipcRenderer.on('signup-status', (_evt, value) => callback(value)),
     login: (user, pass) => ipcRenderer.invoke('loginTCP', user, pass),
     signup: (user, pass) => ipcRenderer.invoke('signupTCP', user, pass),
+    sendNotification: (title, body) => ipcRenderer.invoke('sendNotification', title, body),
 })
 
 contextBridge.exposeInMainWorld('userData', {
