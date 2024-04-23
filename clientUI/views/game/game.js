@@ -18,6 +18,7 @@ let username;
     const user = JSON.parse(await window.userData.getUserData());
     username = user.username;
     window.game.connect();
+    window.game.cmd("BraulioSG", "join", "null");
     addPlayer(username);
     addCardToPlayer(username, "10-C");
 })();
@@ -317,3 +318,6 @@ function addCardToPlayer(user, card) {
 }
 
 
+window.game.onCommand((value) => {
+    console.log(value);
+})

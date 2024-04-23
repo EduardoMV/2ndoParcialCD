@@ -25,16 +25,20 @@ function connectToChat(callback, user, pass) {
 
 function sendMsg(user, to, msg) {
     const data = Buffer.from(`chat:user=${user}&to=${to}&msg=\"${msg}\"`);
-
-    client.send(data, server_port, server_addr, (err) => {
-        if (err) client.close();
-    })
+    sendToServer(data);
 }
 
 function sendGameCmd(user, action, data = "null") {
     const msg = Buffer.from(`game:user=${user}&action=${action}&data=${data}`);
-    client.send(msg, server_port, server_addr, (err) => {
-        if (err) client.close();
+    sendToServer(msg);
+}
+
+function sendToServer(buffer) {
+    console.log(buffer);
+    client.send(buffer, server_port, server_addr, (err) => {
+        if (err) {
+            console.log(err);
+        }
     })
 }
 

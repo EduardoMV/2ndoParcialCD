@@ -24,7 +24,8 @@ app.whenReady().then(() => {
     ipcMain.handle('connectGame', () => {
         const usr = JSON.parse(userInfo);
         chat.connectToChat((data) => {
-            const [cmd, ..._args] = data;
+            const [cmd, ..._args] = data.split(":");
+            console.log(cmd, data);
             if (cmd === "chat") updateChatStream(data);
             else if (cmd === "game") updateGameStream(data);
 
@@ -32,7 +33,7 @@ app.whenReady().then(() => {
     });
 
     ipcMain.handle('sendMsg', (_evt, user, to, msg) => chat.sendMsg(user, to, msg));
-    ipcMain.handle('sendCmd', (_evt, user, action, data = "null") => chat.sendMsg(user, action, data));
+    ipcMain.handle('sendCmd', (_evt, user, action, data = "null") => chat.sendGameCmd(user, action, data));
 
     ipcMain.on('user-info', (_evt, val) => {
         userInfo = val

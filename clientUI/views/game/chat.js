@@ -13,7 +13,7 @@ chatField.addEventListener("keypress", (evt) => {
         if (fieldFormat.test(value) && value.trim().length > 0) {
             const [cmd, tag, ...msg] = value.split(" ");
             let to = cmd === "/to" && tag !== undefined ? tag : "everyone";
-            window.game.send("chat", username, to, to === "everyone" ? value : msg.join(" "));
+            window.game.send(username, to, to === "everyone" ? value : msg.join(" "));
             chatField.value = "";
         }
     }
