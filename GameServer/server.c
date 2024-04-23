@@ -197,6 +197,25 @@ int main()
                 sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
 
             } else if (strcmp(action, "endTurn") == 0) {
+                int currentPlayerIndex = -1;
+                for (int i = 0; i < userCount; i++) {
+                    if (strcmp(username, users[i]) == 0) {
+                        currentPlayerIndex = i;
+                        break;
+                    }
+                }
+
+                if (currentPlayerIndex == userCount - 1) {
+                    strcpy(buffer, "game:action=endTurn&data=null");
+                } else {
+                    char nextPlayer[MAXLINE];
+                    strcpy(nextPlayer, users[currentPlayerIndex + 1]);
+
+                    strcpy(buffer, "game:action=endTurn&data=");
+                    strcat(buffer, nextPlayer);
+                }
+
+                sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
 
             } else if (strcmp(action, "dealer") == 0) {
 
