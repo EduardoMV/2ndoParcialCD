@@ -319,5 +319,14 @@ function addCardToPlayer(user, card) {
 
 
 window.game.onCommand((value) => {
-    console.log(value);
+    const [cmd, ...args] = value.split(":");
+
+    if (cmd !== "game") return;
+
+    const [actionProps, dataProps] = args.split("&");
+    const [_actionKey, action] = actionProps.split("=");
+    const [_dataKey, data] = dataProps.split("=");
+
+
+
 })
