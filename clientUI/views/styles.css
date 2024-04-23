@@ -6,6 +6,17 @@
     transition: all 0.3s ease;
 }
 
+body {
+    background-image: url('background/10081437.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+section{
+    background-color: black;
+}
+
 button {
     border: 3px solid var(--accent);
     outline: none;
@@ -65,12 +76,6 @@ a {
 a:hover {
     cursor: pointer;
     transform: scale(1.3);
-}
-body{
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background-color: var(--background);
 }
 
 /* width */
