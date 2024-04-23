@@ -3,15 +3,6 @@ const chatList = document.getElementById("chatList");
 const chatToggler = document.getElementById("toggle-chat");
 const chatDiv = document.getElementById("chat")
 
-let username;
-
-window.onload = async () => {
-    const user = JSON.parse(await window.userData.getUserData());
-    username = user.username;
-    window.game.connect();
-
-}
-
 chatField.addEventListener("keypress", (evt) => {
     if (evt.key == "Enter") {
         evt.preventDefault();
