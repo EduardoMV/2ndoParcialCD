@@ -1,18 +1,17 @@
-let dealerCount = 0, playerAces = 0, dealerAces = 0
-let hiddenCard, deck = []
-let canHitMe = true
 let stayBtn = document.getElementById('stay')
 let hitBtn = document.getElementById('hitMe')
-let result = document.getElementById('result')
-let dealerCountText = document.getElementById('dealer-count')
-let playerCountText = document.getElementById('player-count')
+let startBtn = document.getElementById('start')
 
 //NEW VARS
 const hiddenCardElement = document.querySelector('#hidden-card');
 const playerHandsContainerElement = document.querySelector('#player-hands');
 
 let playerCount = 0;
-let currentTurn = 1;
+let currentTurn = 0;
+let players = [];
+let cardCant = 0;
+let cardCantDealer = 0;
+let hiddenCard = null;
 
 let username;
 
@@ -21,36 +20,27 @@ let username;
     const user = JSON.parse(await window.userData.getUserData());
     username = user.username;
     window.game.connect();
-    window.game.cmd("BraulioSG", "join", "null");
-    /*
-    addPlayer(username);
-    addCardToPlayer(username, "10-C");
-    addCardToPlayer(username, "A-C");
-
-    addPlayer("DiegoJmz");
-    addCardToPlayer("DiegoJmz", "A-S");
-    addCardToPlayer("DiegoJmz", "A-C");
-
-    addPlayer("EduardoMV");
-    addCardToPlayer("EduardoMV", "A-S");
-    addCardToPlayer("EduardoMV", "A-C");
-
-    document.getElementById("dealer-cards").appendChild(createPlayerElement("dealer"));
-    addCardToPlayer("dealer", "A-H");
-    addCardToPlayer("dealer", "A-C", true);
-    */
+    window.game.cmd(username, "join", "null");
 })();
 
 stayBtn.addEventListener('click', () => {
-    nextTurn();
+    window.game.cmd(username, "turn");
 })
 
-function nextTurn() {
-    playerHandsContainerElement.style.transform = `translate(-${(100 / playerCount) * currentTurn}%)`;
-    currentTurn++;
-    if (currentTurn >= playerCount) {
-        currentTurn = 0;
+hitBtn.addEventListener('click', () => {
+    window.game.cmd(username, "take");
+})
+
+startBtn.addEventListener('click', () => {
+    window.game.cmd(username, "start");
+})
+
+function moveToNextPlayer(pos = currentTurn) {
+    if (pos >= players.length) {
+        playerHandsContainerElement.style.transform = `translate(-${0 * pos}vw)`;
+
     }
+    else playerHandsContainerElement.style.transform = `translate(-${100 * pos}vw)`;
 }
 
 /*
@@ -266,7 +256,7 @@ function addPlayer(user) {
     if (document.getElementById(`player-${user}`)) return false;
 
     playerCount++;
-    playerHandsContainerElement.style.width = `${playerCount * 100}vw`;
+    playerHandsContainerElement.style.width = `${players.length * 100}vw`;
     playerHandsContainerElement.appendChild(createPlayerElement(user));
 
     return true;
@@ -313,6 +303,8 @@ function createCardElement(card, hidden = false) {
     cardInner.appendChild(cardBack);
     cardDiv.appendChild(cardInner);
 
+    if (hidden) hiddenCard = cardDiv;
+
 
     return cardDiv;
 }
@@ -325,6 +317,7 @@ function createCardElement(card, hidden = false) {
 function addCardToPlayer(user, card, hidden = false) {
     const playerHandElement = document.querySelector(`div#player-${user} > div.player-hand`);
     if (!playerHandElement) return false;
+    console.log("found")
 
     playerHandElement.appendChild(createCardElement(card, hidden));
 
@@ -338,20 +331,126 @@ function addCardToPlayer(user, card, hidden = false) {
 
     playerHandElement.classList.add(classes[playerHandElement.childNodes.length - 1]);
 
-
+    console.log(playerHandElement);
     return true;
 }
 
 
 window.game.onCommand((value) => {
-    const [cmd, ...args] = value.split(":");
+    const [cmd, args] = value.split(":");
     console.log(value);
 
     if (cmd !== "game") return;
 
     const [actionProps, dataProps] = args.split("&");
     const [_actionKey, action] = actionProps.split("=");
-    const [_dataKey, data] = dataProps.split("=");
+    let [_dataKey, data] = dataProps.split("=");
+
+    if (action === "join") {
+        players = data.split(",");
+        playerHandsContainerElement.innerHTML = "";
+        playerCount = 0;
+        players.forEach(player => {
+            addPlayer(player);
+        });
+    }
+
+    else if (action === "start") {
+        if (username === players[0]) {
+            startBtn.disabled = true;
+            window.game.cmd(username, "take");
+            setTimeout(() => {
+                window.game.cmd(username, "take");
+                setTimeout(() => {
+                    window.game.cmd(username, "turn");
+                }, 1000);
+
+            }, 500);
+        }
+    }
+    else if (action === "take") {
+        data = data.replace('X', '10');
+        console.log(`adding to ${currentTurn}`);
+        if (currentTurn < players.length) {
+            addCardToPlayer(players[currentTurn], data);
+            cardCant++;
+        } else {
+
+            addCardToPlayer("dealer", data, cardCantDealer === 0);
+            cardCantDealer++;
+        }
+    }
+    else if (action === "turn") {
+        currentTurn++;
+        if (currentTurn > players.length) currentTurn = 0;
+        startBtn.disabled = true;
+        hitBtn.disabled = true;
+        if (currentTurn < players.length) {
+            moveToNextPlayer();
+            if (username === players[currentTurn]) {
+                startBtn.disabled = false;
+                hitBtn.disabled = false;
+                if (cardCantDealer === 0) {
+                    window.game.cmd(username, "take");
+                    setTimeout(() => {
+                        window.game.cmd(username, "take");
+                        setTimeout(() => {
+                            window.game.cmd(username, "turn");
+                        }, 1000);
+
+                    }, 500);
+                }
+            }
+        }
+        else if (currentTurn === players.length) {
+            if (username === players[players.length - 1]) {
+                if (cardCantDealer === 0) {
+                    console.log("dealing...")
+                    window.game.cmd("dealer", "take");
+                    setTimeout(() => {
+                        window.game.cmd("dealer", "take");
+                        setTimeout(() => {
+                            window.game.cmd("dealer", "turn");
+                        }, 1000);
+
+                    }, 500);
+                } else {
+                    let counter = 0;
+                    let interval = setInterval(() => {
+                        if (counter > 1) {//dealer points < 17
+                            clearInterval(interval);
+                            setTimeout(() => {
+                                window.game.cmd("dealer", "reset");
+                            }, 1000);
+                            return;
+                        }
+                        counter++;
+                        window.game.cmd("dealer", "take");
+                    }, 1000)
+
+                }
+            }
+            if (cardCantDealer !== 0) {
+                moveToNextPlayer(players.indexOf(username))
+                document.querySelector("div#player-dealer > div.player-hand > div.card.hidden").classList.remove("hidden");
+            }
+        }
+    }
+    else if (action === "reset") {
+        startBtn.disabled = false;
+        removePlayer("dealer");
+        players.forEach(p => removePlayer(p));
+        playerCount = 0;
+        currentTurn = 0;
+        players = [];
+        cardCant = 0;
+        cardCantDealer = 0;
+        moveToNextPlayer();
+
+        document.getElementById("dealer-cards").appendChild(createPlayerElement("dealer"));
+
+        window.game.cmd(username, "join", "null");
+    }
 
 
 })

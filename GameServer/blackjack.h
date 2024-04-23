@@ -27,7 +27,6 @@ void init_deck(struct card *empty_deck){
 
 void shuffle_deck(struct card *deck){
     int n = 52;
-    srand(time(NULL));
     for(int c = 0; c < n; c++){
         int idx = (rand() % n);
         
@@ -42,6 +41,10 @@ void shuffle_deck(struct card *deck){
 static int currentIndex = 0;
 
 struct card takeCard(struct card * deck){
+    int idx = (rand() % 52);
+    return deck[idx];
+
+    /*
 
     if (currentIndex >= 52) {
         init_deck(deck);
@@ -58,5 +61,6 @@ struct card takeCard(struct card * deck){
     currentIndex++;
 
     return res;
+    */
 }
 #endif /* BLACKJACK_H */
