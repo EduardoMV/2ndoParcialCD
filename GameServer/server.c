@@ -219,6 +219,37 @@ int main()
 
             } else if (strcmp(action, "dealer") == 0) {
 
+                int dealerValue;
+                /*
+                 * Aqui tienen que mandarle el número al dealer
+                 */
+                sscanf(data, "%d", &dealerValue);
+
+                struct card dealerCards[10];
+                int totalValue = dealerValue;
+
+                int cardCount = 0;
+                while (totalValue < 17) {
+                    struct card takenCard = takeCard(deck);
+                    dealerCards[cardCount] = takenCard;
+                    totalValue += atoi(takenCard.numb); // Asumiendo que existe una función getCardValue que devuelve el valor numérico de la carta
+                    cardCount++;
+                }
+
+
+                strcpy(buffer, "game:action=dealer&data=");
+                for (int i = 0; i < cardCount; i++) {
+                    char cardStr[MAXLINE];
+                    sprintf(cardStr, "%c-%c", dealerCards[i].numb, dealerCards[i].symb);
+                    strcat(buffer, cardStr);
+                    strcat(buffer, ",");
+                }
+                if (strlen(buffer) > 0) {
+                    buffer[strlen(buffer) - 1] = '\0'; // Eliminar la coma final
+                }
+
+                // Enviar la respuesta al cliente
+                sendto(listenfd, buffer, strlen(buffer), 0, (struct sockaddr*)&cliaddr, sizeof(cliaddr));
             }
         }else{
             strcpy(buffer, line);
