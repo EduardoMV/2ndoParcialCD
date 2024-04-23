@@ -1,192 +1,213 @@
-:root {
-  --text: #e4eff6;
-  --background: #2e602e;
-  --primary: #99c2dc;
-  --accent: #8ac659;
-}
-h1, h2{
-  color: var(--text);
-}
-h1{
-  margin-top: 10px;
-  font-size: 50px;
-}
-
-h2{
-  margin-top: 15px;
-  font-size: 30px;
-}
-
 body {
-  background: var(--background);
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+    background: var(--background);
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-button {
-  border: 3px solid var(--accent);
-  outline: none;
-  margin: 15px;
-  background: var(--accent);
-  color: var(--background);
-  padding: 15px 25px;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-  font-weight: bold;
-  font-size: large;
-}
-button.secondary {
-  background: none;
-  color: var(--accent);
-}
-button:hover {
-  transform: scale(1.05);
-  -webkit-box-shadow: 0px 0px 15px 0px var(--primary);
-  -moz-box-shadow: 0px 0px 15px 0px var(--primary);
-  box-shadow: 0px 0px 15px 0px var(--primary);
+.player-scroller {
+    width: 100vw;
+    overflow-x: auto;
 }
 
-button.secondary:hover {
-  background: var(--accent);
-  color: var(--background);
+.player-hands {
+    display: flex;
 }
 
-.dealer-cards img, .player-cards img {
-  height: 175px;
-  aspect-ratio: 0.7;
-  margin: 5px;
+.player {
+    min-height: 200px;
+    background: red;
 }
-.card-play{
-  display: flex;
-  justify-content: center;
+
+.player-title {
+    text-align: center;
 }
 
 
-.card.player{
-  animation: appearPlayerCard 1s ease-in-out;
+/* CARD STYLES */
+.player-hand,
+.dealer-hand {
+    display: flex;
+    justify-content: center;
+    gap: -100px;
 }
 
 /* CARD STYLES */
-.player-hand {
-  display: flex;
-  justify-content: center;
-  gap: -100px;
+.card {
+    --x-offset: -0px;
+    --y-offset: 0px;
+    --angle: 0deg;
+    background-color: transparent;
+    height: 175px;
+    aspect-ratio: 0.7;
+    border-radius: 10px;
+    overflow: hidden;
+    perspective: 1000px;
+    /* Remove this if you don't want the 3D effect */
+    transform: translate(var(--x-offset), var(--y-offset)) rotate(var(--angle));
+    animation: appearCard 1s ease;
 }
 
-.player-hand img {
-  --x-offset: -0px;
-  --y-offset: 0px;
-  --angle: 0deg;
-  height: 175px;
-  overflow: hidden;
-  border-radius: 10px;
-  aspect-ratio: 0.7;
-  background: red;
-  transform-origin: center center;
-  transition: all 0.5s ease;
-  animation: appearCard 1s ease;
-  transform: translate(var(--x-offset), var(--y-offset)) rotate(var(--angle));
+.card.player {
+    animation: appearPlayerCard 1s ease-in-out;
 }
 
-.player-hand.one img:nth-child(1) {
-  --angle: 0;
+.card.hidden {
+    animation: appearHiddenCard 1s ease;
 }
 
-.player-hand.two img:nth-child(1) {
-  --angle: -5deg;
-  --x-offset: 30px;
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    border-radius: 10px;
 }
 
-.player-hand.two img:nth-child(2) {
-  --angle: 5deg;
-  --x-offset: -30px;
-  --y-offset: 3px;
+.card.hidden .card-inner {
+    transform: rotateY(180deg);
 }
 
-.player-hand.three img:nth-child(1) {
-  --angle: -5deg;
-  --x-offset: 40px;
-  --y-offset: 5px;
+.player-hand .card:hover {
+    transform: scale(1.05);
+
 }
 
-.player-hand.three img:nth-child(2) {
-  --angle: 0deg;
-  --x-offset: 0px;
-}
-.player-hand.three img:nth-child(3) {
-  --angle: 5deg;
-  --x-offset: -40px;
-  --y-offset: 7px;
-}
-
-.player-hand.four img:nth-child(1) {
-  --angle: -10deg;
-  --x-offset: 60px;
-  --y-offset: 8px;
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.player-hand.four img:nth-child(2) {
-  --angle: -5deg;
-  --x-offset: 20px;
-  --y-offset: 0px;
-}
-.player-hand.four img:nth-child(3) {
-  --angle: 5deg;
-  --x-offset: -20px;
-  --y-offset: 2px;
+.card-back {
+    transform: rotateY(180deg);
 }
 
-.player-hand.four img:nth-child(4) {
-  --angle: 10deg;
-  --x-offset: -60px;
-  --y-offset: 12px;
+
+.one .card:nth-child(1) {
+    --angle: 0;
 }
 
-.player-hand.five img:nth-child(1) {
-  --angle: -10deg;
-  --x-offset: 120px;
-  --y-offset: 10px;
+.two .card:nth-child(1) {
+    --angle: -5deg;
+    --x-offset: 30px;
 }
 
-.player-hand.five img:nth-child(2) {
-  --angle: -5deg;
-  --x-offset: 60px;
-  --y-offset: 2px;
-}
-.player-hand.five img:nth-child(3) {
-  --angle: 0deg;
-  --y-offset: 0px;
-  --x-offset: 0px;
+.two .card:nth-child(2) {
+    --angle: 5deg;
+    --x-offset: -30px;
+    --y-offset: 3px;
 }
 
-.player-hand.five img:nth-child(4) {
-  --angle: 5deg;
-  --x-offset: -60px;
-  --y-offset: 2px;
+.three .card:nth-child(1) {
+    --angle: -5deg;
+    --x-offset: 40px;
+    --y-offset: 5px;
 }
 
-.player-hand.five img:nth-child(5) {
-  --angle: 10deg;
-  --x-offset: -120px;
-  --y-offset: 10px;
+.three .card:nth-child(2) {
+    --angle: 0deg;
+    --x-offset: 0px;
+}
+
+.three .card:nth-child(3) {
+    --angle: 5deg;
+    --x-offset: -40px;
+    --y-offset: 7px;
+}
+
+.four .card:nth-child(1) {
+    --angle: -10deg;
+    --x-offset: 60px;
+    --y-offset: 8px;
+}
+
+.four .card:nth-child(2) {
+    --angle: -5deg;
+    --x-offset: 20px;
+    --y-offset: 0px;
+}
+
+.four .card:nth-child(3) {
+    --angle: 5deg;
+    --x-offset: -20px;
+    --y-offset: 2px;
+}
+
+.four .card:nth-child(4) {
+    --angle: 10deg;
+    --x-offset: -60px;
+    --y-offset: 12px;
+}
+
+.five .card:nth-child(1) {
+    --angle: -10deg;
+    --x-offset: 120px;
+    --y-offset: 10px;
+}
+
+.five .card:nth-child(2) {
+    --angle: -5deg;
+    --x-offset: 60px;
+    --y-offset: 2px;
+}
+
+.five .card:nth-child(3) {
+    --angle: 0deg;
+    --y-offset: 0px;
+    --x-offset: 0px;
+}
+
+.five .card:nth-child(4) {
+    --angle: 5deg;
+    --x-offset: -60px;
+    --y-offset: 2px;
+}
+
+.five .card:nth-child(5) {
+    --angle: 10deg;
+    --x-offset: -120px;
+    --y-offset: 10px;
 }
 
 @keyframes appearCard {
-  0% {
-      transform: translate(0, -200%) rotate(90deg);
-      opacity: 0;
-  }
-  50% {
-      transform: translate(0, 0) rotate(0);
-      opacity: 1;
-  }
-  100% {
-      transform: translate(var(--x-offset), var(--y-offset))
-          rotate(var(--angle));
-      opacity: 1;
-  }
+    0% {
+        transform: translate(0, -200%) rotate(90deg) rotateY(180deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translate(0, 0) rotate(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--x-offset), var(--y-offset)) rotate(var(--angle)) rotateY(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes appearHiddenCard {
+    0% {
+        transform: translate(0, -200%) rotate(90deg) rotateY(180deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translate(0, 0) rotate(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--x-offset), var(--y-offset)) rotate(var(--angle)) rotateY(180deg);
+        opacity: 1;
+    }
 }

@@ -3,15 +3,6 @@ const chatList = document.getElementById("chatList");
 const chatToggler = document.getElementById("toggle-chat");
 const chatDiv = document.getElementById("chat")
 
-let username;
-
-window.onload = async () => {
-    const user = JSON.parse(await window.userData.getUserData());
-    username = user.username;
-    window.game.connect();
-
-}
-
 chatField.addEventListener("keypress", (evt) => {
     if (evt.key == "Enter") {
         evt.preventDefault();
@@ -22,7 +13,7 @@ chatField.addEventListener("keypress", (evt) => {
         if (fieldFormat.test(value) && value.trim().length > 0) {
             const [cmd, tag, ...msg] = value.split(" ");
             let to = cmd === "/to" && tag !== undefined ? tag : "everyone";
-            window.game.send("chat", username, to, to === "everyone" ? value : msg.join(" "));
+            window.game.send(username, to, to === "everyone" ? value : msg.join(" "));
             chatField.value = "";
         }
     }

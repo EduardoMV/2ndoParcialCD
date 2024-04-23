@@ -20,26 +20,30 @@ function connectToChat(callback, user, pass) {
         callback(data);
     })
 
-    sendMsg("chat", "server", "everyone", `${user} is connected to chat`)
+    sendMsg("server", "everyone", `${user} is connected to chat`)
 }
 
-function sendMsg(cmd, user, to, msg) {
-    const data = Buffer.from(`${cmd}:user=${user}&to=${to}&msg=\"${msg}\"`);
-
-    client.send(data, server_port, server_addr, (err) => {
-        if (err) client.close();
-    })
+function sendMsg(user, to, msg) {
+    const data = Buffer.from(`chat:user=${user}&to=${to}&msg=\"${msg}\"`);
+    sendToServer(data);
 }
 
-function sendCmd(cmd, user, action) {
-    const data = Buffer.from(`${cmd}:user=${user}&action=${action}`);
+function sendGameCmd(user, action, data = "null") {
+    const msg = Buffer.from(`game:user=${user}&action=${action}&data=${data}`);
+    sendToServer(msg);
+}
 
-    client.send(data, server_port, server_addr, (err) => {
-        if (err) client.close();
+function sendToServer(buffer) {
+    console.log(buffer);
+    client.send(buffer, server_port, server_addr, (err) => {
+        if (err) {
+            console.log(err);
+        }
     })
 }
 
 module.exports = {
     connectToChat,
-    sendMsg
+    sendMsg,
+    sendGameCmd
 }
