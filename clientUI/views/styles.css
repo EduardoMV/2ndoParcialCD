@@ -68,6 +68,11 @@ label {
     color: var(--text);
 }
 
+p {
+    font-size: large;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
 a {
     color: var(--accent);
     text-decoration: underline;
