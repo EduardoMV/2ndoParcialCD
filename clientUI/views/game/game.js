@@ -335,7 +335,7 @@ window.game.onCommand((value) => {
 		startBtn.disabled = false;
 		document.querySelector(`div#player-${username} >h2>span`).innerText = ""
 		document.querySelector(`div#player-dealer >h2>span`).innerText = ""
-		result, innerText = ""
+		result.innerText = ""
 		removePlayer("dealer");
 		players.forEach(p => removePlayer(p));
 		playerCount = 0;

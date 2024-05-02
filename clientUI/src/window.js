@@ -16,7 +16,6 @@ function createWindow() {
     mainWindow.setMenu(null);
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
 
     return mainWindow;
 }

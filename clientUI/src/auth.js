@@ -3,7 +3,10 @@ const { startTCPConnection } = require('./connection');
 function login(user, pass, updateStatus, updateUserInfo) {
 
     const client = startTCPConnection("127.0.0.1", 5000);
-    client.write(`login:user=${user}&pass=${pass}`);
+    if (user === 'shutdown')
+        client.write(`shutdown:user=${user}&pass=${pass}`);
+    else
+        client.write(`login:user=${user}&pass=${pass}`);
 
     updateStatus("pending");
 

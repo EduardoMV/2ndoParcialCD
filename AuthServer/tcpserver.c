@@ -146,6 +146,20 @@ int main()
 			perror("accept");
 			exit(1);
 		}
+		if (recv(sd_actual, dir, sizeof(dir), 0) == -1)
+		{
+			perror("recv");
+			exit(1);
+		}
+
+		char *token = strtok(dir, ":");
+		
+		if(strcmp(token, "shutdown") == 0){
+			sendMsg("Server shutting down");
+			close(sd_actual);
+			break;
+		}
+
 		child_pid = fork();
 		if (child_pid == 0)
 		{
